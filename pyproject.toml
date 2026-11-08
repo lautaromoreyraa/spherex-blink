@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling==1.33.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spherex-blink"
+version = "0.1.0"
+description = "Parpadeo y búsqueda de objetos que se mueven en imágenes reales de SPHEREx"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Lautaro Moreyra" }]
+requires-python = ">=3.12,<3.13"
+# Versiones fijadas: el pipeline tiene que dar lo mismo en la PC y en la CI
+# (RNF-12), y una versión nueva de una dependencia no puede cambiar el
+# contrato sin que nadie lo note.
+dependencies = [
+    "pydantic==2.14.3",
+    "jsonschema==4.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.2.0",
+    "ruff==0.17.4",
+    "mypy==2.4.1",
+    "types-jsonschema==4.26.0.20261006",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["contrato"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF"]
+# RUF001-003 marcan como «ambiguos» caracteres como «σ» o «′», que en este
+# proyecto son notación astronómica legítima en textos y comentarios.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "pipeline", "api", "contrato"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["contrato", "tests"]
+explicit_package_bases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# importlib permite archivos de test con el mismo nombre en distintas
+# carpetas sin agregar __init__.py a tests/.
+addopts = ["--import-mode=importlib", "-m", "not red", "--strict-markers"]
+markers = [
+    "red: pega a servicios reales (IRSA, SkyBoT, SIMBAD); fuera de la corrida por defecto y de la CI",
+]

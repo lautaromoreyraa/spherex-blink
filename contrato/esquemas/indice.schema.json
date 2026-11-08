@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "contrato 0.1.0",
+  "$defs": {
+    "Coordenadas": {
+      "additionalProperties": false,
+      "description": "Punto del cielo en grados ICRS.",
+      "properties": {
+        "ra": {
+          "description": "Ascensión recta ICRS en grados",
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "dec": {
+          "description": "Declinación ICRS en grados",
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        }
+      },
+      "required": [
+        "ra",
+        "dec"
+      ],
+      "title": "Coordenadas",
+      "type": "object"
+    },
+    "ResumenDeCampo": {
+      "additionalProperties": false,
+      "description": "Lo que la página de inicio necesita para listar un campo.",
+      "properties": {
+        "id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "nombre": {
+          "$ref": "#/$defs/TextoTraducido"
+        },
+        "centro": {
+          "$ref": "#/$defs/Coordenadas"
+        },
+        "tamano_grados": {
+          "description": "Lado del campo en grados",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6"
+          ],
+          "type": "string"
+        },
+        "cantidad_epocas": {
+          "description": "Épocas incluidas en el campo",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "objeto_destacado": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Lo que hay que mirar en el campo"
+        },
+        "miniatura": {
+          "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "nombre",
+        "centro",
+        "tamano_grados",
+        "detector",
+        "cantidad_epocas",
+        "objeto_destacado",
+        "miniatura"
+      ],
+      "title": "ResumenDeCampo",
+      "type": "object"
+    },
+    "TextoTraducido": {
+      "additionalProperties": false,
+      "description": "Texto en los dos idiomas de la interfaz (RNF-06).",
+      "properties": {
+        "es": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "en": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "es",
+        "en"
+      ],
+      "title": "TextoTraducido",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Raíz de `indice.json`.",
+  "properties": {
+    "version_contrato": {
+      "description": "Versión del contrato con que se generó",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "generado_en": {
+      "description": "Cuándo corrió el pipeline (UTC)",
+      "format": "date-time",
+      "type": "string"
+    },
+    "campos": {
+      "items": {
+        "$ref": "#/$defs/ResumenDeCampo"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "version_contrato",
+    "generado_en",
+    "campos"
+  ],
+  "title": "Indice",
+  "type": "object"
+}

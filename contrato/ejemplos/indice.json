@@ -1,0 +1,16 @@
+{
+  "version_contrato": "0.1.0",
+  "generado_en": "2026-11-08T12:00:00Z",
+  "campos": [
+    {
+      "id": "ejemplo-estrella-de-barnard",
+      "nombre": { "es": "Ejemplo: Estrella de Barnard", "en": "Example: Barnard's Star" },
+      "centro": { "ra": 269.452, "dec": 4.6934 },
+      "tamano_grados": 0.0833,
+      "detector": "D2",
+      "cantidad_epocas": 3,
+      "objeto_destacado": "Estrella de Barnard",
+      "miniatura": "campos/ejemplo-estrella-de-barnard/miniatura.webp"
+    }
+  ]
+}
