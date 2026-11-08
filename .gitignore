@@ -1,0 +1,30 @@
+# Documentación de trabajo y de asistentes: vive en disco, no en el repo
+CLAUDE.md
+AGENTS.md
+MEMORY.md
+.claude/
+.cursorrules
+docs/
+*.md
+!README.md
+!CREDITS.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+coverage/
+
+# Datos: los FITS y la caché se bajan, no se versionan
+cache/
+*.fits
+.env
+.env.local
