@@ -10,3 +10,12 @@ test('la página de inicio carga con el título del proyecto', async ({ page }) 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('spherex-blink')
   expect(errores).toEqual([])
 })
+
+test('el pie muestra los reconocimientos de las fuentes de datos', async ({ page }) => {
+  await page.goto('/')
+
+  const pie = page.getByRole('contentinfo')
+  for (const fuente of ['SPHEREx', 'IRSA', 'SkyBoT', 'JPL Horizons', 'SIMBAD']) {
+    await expect(pie.getByRole('link', { name: fuente, exact: true })).toBeVisible()
+  }
+})

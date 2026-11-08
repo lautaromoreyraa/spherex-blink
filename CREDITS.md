@@ -7,16 +7,46 @@ licencia original.
 
 ## Datos
 
-| Fuente | Uso | Reconocimiento |
-|---|---|---|
-| SPHEREx (NASA/JPL-Caltech), distribuido por [IRSA](https://irsa.ipac.caltech.edu/) (NASA/IPAC Infrared Science Archive) | Imágenes L2 de todas las épocas | Texto de reconocimiento a confirmar con los términos de IRSA |
-| [SkyBoT](https://ssp.imcce.fr/webservices/skybot/) (IMCCE) | Cuerpos del Sistema Solar en cada campo y fecha | A confirmar |
-| [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) (NASA/JPL) | Efemérides de cuerpos del Sistema Solar | A confirmar |
-| [SIMBAD](https://simbad.cds.unistra.fr/) (CDS, Estrasburgo) | Estrellas de catálogo y su movimiento propio | A confirmar |
+| Fuente | Uso |
+|---|---|
+| SPHEREx (NASA/JPL-Caltech), distribuido por [IRSA](https://irsa.ipac.caltech.edu/) | Imágenes L2 de todas las épocas |
+| [SkyBoT](https://ssp.imcce.fr/webservices/skybot/) (IMCCE) | Cuerpos del Sistema Solar en cada campo y fecha |
+| [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) (NASA/JPL) | Efemérides de cuerpos del Sistema Solar |
+| [SIMBAD](https://simbad.cds.unistra.fr/) (CDS, Estrasburgo) | Estrellas de catálogo y su movimiento propio |
 
-Los textos de reconocimiento exactos que piden SPHEREx, IRSA, SkyBoT, JPL y
-SIMBAD, y los términos para redistribuir recortes procesados, se citan acá con
-su enlace antes de publicar los campos de la demo.
+### Reconocimientos
+
+Son los textos que pide cada fuente, consultados el 2026-11-08. El sitio los
+muestra en el pie de todas las páginas (`web/src/layout/reconocimientos.ts`).
+
+- **SPHEREx**
+  ([SPHEREx Quick Release Overview](https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_qr.html)):
+  «This publication makes use of data products from the Spectro-Photometer
+  for the History of the Universe, Epoch of Reionization and Ices Explorer
+  (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the
+  California Institute of Technology, and is funded by the National
+  Aeronautics and Space Administration.» Además se cita el DOI del Quick
+  Release usado (QR1 10.26131/IRSA629, QR2 10.26131/IRSA652, QR3
+  10.26131/IRSA662), que se fija cuando el pipeline elija la versión de los
+  datos.
+- **IRSA** ([Acknowledging IRSA](https://irsa.ipac.caltech.edu/ack.html)):
+  «This research has made use of the NASA/IPAC Infrared Science Archive, which
+  is funded by the National Aeronautics and Space Administration and operated
+  by the California Institute of Technology.»
+- **SkyBoT** ([SkyBoT, IMCCE](https://ssp.imcce.fr/webservices/skybot/)):
+  «This research has made use of LTE SkyBoT VO tool», o la cita de Berthier et
+  al. 2006, ASPC 351, 367 (2006ASPC..351..367B).
+- **JPL Horizons** ([manual de Horizons](https://ssd.jpl.nasa.gov/horizons/manual.html#ack)):
+  «Giorgini, JD and JPL Solar System Dynamics Group, NASA/JPL Horizons On-Line
+  Ephemeris System, <https://ssd.jpl.nasa.gov/horizons/>, data retrieved
+  YYYY-MON-DD.» La fecha de consulta de cada campo queda en
+  `conocidos[].consultado_en`.
+- **SIMBAD** ([CDS](https://cdsxmatch.cds.unistra.fr/xmatch/doc/simbad-ack.html)):
+  «This research has made use of the SIMBAD database, operated at CDS,
+  Strasbourg, France», con la cita de Wenger et al. 2000, A&AS 143, 9.
+
+Los términos para redistribuir recortes procesados de IRSA se citan acá con su
+enlace antes de publicar los campos de la demo.
 
 ## Código de terceros
 

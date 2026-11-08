@@ -1,0 +1,31 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout__contenido {
+  flex: 1;
+}
+
+.pie {
+  max-width: var(--ancho-lectura);
+  margin: 0 auto;
+  padding: var(--espacio-8) var(--espacio-4);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-chico);
+}
+
+.pie__titulo {
+  margin: 0 0 var(--espacio-3);
+  font-size: var(--texto-base);
+  color: var(--color-texto);
+}
+
+.pie__lista {
+  display: grid;
+  gap: var(--espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
