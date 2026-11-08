@@ -1,0 +1,6 @@
+# Configuración de Cloudflare Pages (TAR-04). Pages lee este archivo cuando el
+# proyecto se conecta al repo con «Root directory» = web/; la build la hace
+# Pages con `npm run build` y publica dist/.
+name = "spherex-blink"
+compatibility_date = "2026-11-01"
+pages_build_output_dir = "./dist"
