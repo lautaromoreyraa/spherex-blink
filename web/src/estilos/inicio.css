@@ -1,0 +1,18 @@
+.inicio {
+  max-width: var(--ancho-lectura);
+  margin: 0 auto;
+  padding: var(--espacio-12) var(--espacio-4);
+}
+
+.inicio__titulo {
+  margin: 0 0 var(--espacio-4);
+  font-size: var(--texto-titulo);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.inicio__bajada {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-grande);
+}

@@ -1,0 +1,36 @@
+/*
+ * Tokens de diseño. Toda hoja usa estas variables y no valores sueltos, para
+ * que el tema y la escala se cambien en un solo lugar.
+ */
+:root {
+  color-scheme: dark;
+
+  /* Color: fondo casi negro para que las imágenes del cielo manden. */
+  --color-fondo: #0b0d12;
+  --color-superficie: #151922;
+  --color-texto: #e8eaf0;
+  --color-texto-suave: #a3a9b8;
+  --color-acento: #7cc4ff;
+  --color-foco: #ffd166;
+
+  /* Tipografía */
+  --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fuente-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --texto-chico: 0.875rem;
+  --texto-base: 1rem;
+  --texto-grande: 1.25rem;
+  --texto-titulo: clamp(2rem, 6vw, 3.5rem);
+  --interlineado: 1.5;
+
+  /* Espaciado (escala de 4 px) */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-6: 1.5rem;
+  --espacio-8: 2rem;
+  --espacio-12: 3rem;
+
+  --ancho-lectura: 42rem;
+  --radio: 0.5rem;
+}
