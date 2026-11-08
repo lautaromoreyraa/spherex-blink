@@ -19,3 +19,20 @@ test('el pie muestra los reconocimientos de las fuentes de datos', async ({ page
     await expect(pie.getByRole('link', { name: fuente, exact: true })).toBeVisible()
   }
 })
+
+test('el pie se lee a 1rem y no desborda en un celular', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 })
+  await page.goto('/')
+
+  const tamano = await page
+    .getByRole('contentinfo')
+    .locator('li')
+    .first()
+    .evaluate((elemento) => parseFloat(getComputedStyle(elemento).fontSize))
+  const desborda = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+  )
+
+  expect(tamano).toBeGreaterThanOrEqual(16)
+  expect(desborda).toBe(false)
+})
