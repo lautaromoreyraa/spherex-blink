@@ -5,7 +5,8 @@ import type { PuntoDeEscena } from '../../util/escalas.ts'
 
 interface Props {
   imagen: string
-  nombre: string
+  /** Texto del botón, ya traducido. */
+  texto: string
   posicion: PuntoDeEscena
   tierra: PuntoDeEscena
   tamano: number
@@ -21,7 +22,7 @@ interface Props {
  */
 export default function RecorteDelCampo({
   imagen,
-  nombre,
+  texto,
   posicion,
   tierra,
   tamano,
@@ -57,7 +58,7 @@ export default function RecorteDelCampo({
       </mesh>
       <Html position={[0, -tamano * 0.62, 0]} center zIndexRange={[20, 0]}>
         <button type="button" className="escena__rotulo escena__rotulo--campo" onClick={onVolar}>
-          Volar al campo {nombre}
+          {texto}
         </button>
       </Html>
     </group>

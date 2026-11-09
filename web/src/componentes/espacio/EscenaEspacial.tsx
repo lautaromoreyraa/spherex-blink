@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber'
 import { Suspense, useCallback, useMemo, useState } from 'react'
 import { BackSide } from 'three'
 import type { Campo } from '../../api/tipos.ts'
+import { useIdioma } from '../../hooks/useIdioma.ts'
+import type { Clave } from '../../util/textos.ts'
 import type { ModoDeEscala } from '../../util/escalas.ts'
 import { rutaDeDatos } from '../../util/rutas.ts'
 import Camara, { type Enfoque } from './Camara.tsx'
@@ -63,6 +65,14 @@ export default function EscenaEspacial({
   const dprMaximo = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio, 2)
   const [dpr, setDpr] = useState(dprMaximo)
   const [elegido, setElegido] = useState<CuerpoEnEscena | null>(null)
+  const { t, idioma } = useIdioma()
+
+  // Los rótulos se traducen acá, fuera del lienzo: los botones de `Html`
+  // viven en otra raíz de React y no ven el contexto de idioma (RNF-06).
+  const rotuloDe = (cuerpo: CuerpoEnEscena): string => {
+    if (cuerpo.nombre === null) return t(`escena.cuerpo.${cuerpo.id}` as Clave)
+    return cuerpo.ilustracion ? t('escena.ilustracion', { nombre: cuerpo.nombre }) : cuerpo.nombre
+  }
 
   const contenedor = useCallback((elemento: HTMLDivElement | null) => {
     if (elemento) setColores(leerColores(elemento))
@@ -148,6 +158,7 @@ export default function EscenaEspacial({
               <Cuerpo
                 key={cuerpo.id}
                 cuerpo={cuerpo}
+                rotulo={rotuloDe(cuerpo)}
                 elegido={elegido?.id === cuerpo.id}
                 onElegir={setElegido}
                 colorLiso={colores.liso}
@@ -155,7 +166,7 @@ export default function EscenaEspacial({
             ))}
             <RecorteDelCampo
               imagen={rutaDeDatos(primera.imagen)}
-              nombre={campo.nombre.es}
+              texto={t('escena.volar', { campo: campo.nombre[idioma] })}
               posicion={modelo.campo.posicion}
               tierra={modelo.campo.tierra}
               tamano={modelo.campo.tamano}

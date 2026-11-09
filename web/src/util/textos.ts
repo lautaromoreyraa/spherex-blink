@@ -194,6 +194,65 @@ const es = {
   'procedencia.pipeline': 'Generado con spherex-blink {version}; IRSA consultado el {fecha}.',
   'procedencia.pila': 'Esta vista combina varias épocas; la ficha muestra la última elegida.',
   'creditos.titulo': 'Créditos de este campo',
+  'escena.documento': 'Sistema Solar',
+  'escena.titulo': 'El Sistema Solar en cada pasada',
+  'escena.bajadaObjeto':
+    'Dónde estaban la Tierra y {objeto} cuando SPHEREx fotografió el campo {campo}.',
+  'escena.bajadaSinObjeto':
+    'Dónde estaban la Tierra y los planetas cuando SPHEREx fotografió el campo {campo}.',
+  'escena.campos': 'Campos de la escena',
+  'escena.noEncontrado': 'No encontramos ese campo: «{id}» no es uno de los campos de la demo.',
+  'escena.errorDeCarga': 'No se pudo cargar el campo «{id}»: {detalle}',
+  'escena.verMakemake': 'Ver la escena de Makemake',
+  'escena.avisoIlustrativa':
+    'Tamaños y distancias no están a escala: las distancias están comprimidas y los cuerpos agrandados para que se vean. Las direcciones sí son las reales.',
+  'escena.avisoReal':
+    'Escala real de distancias y tamaños: los cuerpos son más chicos que un píxel y sólo se ven sus rótulos.',
+  'escena.avisoMakemake':
+    'La superficie de Makemake es una ilustración: nadie la fotografió. Su posición sí es la de JPL Horizons.',
+  'escena.cargando3d': 'Cargando la escena 3D…',
+  'escena.volando': 'Volando al campo {campo}…',
+  'escena.saltear': 'Saltear el vuelo (Esc)',
+  'escena.epoca': 'Época {n} de {total}',
+  'escena.epocaValor': '{fecha}, pasada {pasada}',
+  'escena.pasada': 'pasada {n}',
+  'escena.escalaReal': 'Escala real',
+  'escena.volar': 'Volar al campo {campo}',
+  'escena.origenConObjeto':
+    'La Tierra y {objeto} salen de JPL Horizons; los demás planetas se calculan con astronomy-engine.',
+  'escena.origenSinObjeto': 'La Tierra y los planetas se calculan con astronomy-engine.',
+  'escena.texturas': 'Texturas de',
+  'escena.cuerpo.sol': 'Sol',
+  'escena.cuerpo.mercurio': 'Mercurio',
+  'escena.cuerpo.venus': 'Venus',
+  'escena.cuerpo.tierra': 'Tierra',
+  'escena.cuerpo.marte': 'Marte',
+  'escena.cuerpo.jupiter': 'Júpiter',
+  'escena.cuerpo.saturno': 'Saturno',
+  'escena.cuerpo.urano': 'Urano',
+  'escena.cuerpo.neptuno': 'Neptuno',
+  'escena.ilustracion': '{nombre} (ilustración)',
+  'escena.paralajeTitulo': 'Líneas de visión y paralaje',
+  'escena.sinObjeto':
+    'Este campo no sigue a un cuerpo del Sistema Solar. Cada línea sale de la Tierra hacia el centro del campo en una época, y todas son paralelas: para algo tan lejano como una estrella, el ángulo entre ellas es prácticamente 0″ aunque la Tierra haya cambiado de lado del Sol. Lo que se ve moverse en este campo es el movimiento propio de la estrella, no un paralaje del Sistema Solar.',
+  'escena.unaEpoca': 'Este campo tiene una sola época con geometría: no hay dos líneas que comparar.',
+  'escena.lineas':
+    'Cada línea sale de la Tierra hacia {objeto} en una época. Entre el {fechaA} y el {fechaB}, la Tierra se movió {base} UA y las dos líneas forman un ángulo de {segundos}, o sea {pixeles} de SPHEREx ({escala}″ por píxel).',
+  'escena.segundos': '{n}″',
+  'escena.pixeles': '{n} píxeles',
+  'escena.paralajeTierra':
+    'Si {objeto} se hubiera quedado quieto, sólo el cambio de punto de vista lo habría corrido {segundos}″: eso es el paralaje. La diferencia es su propio movimiento en la órbita. {objeto} está a {distancia} UA de la Tierra.',
+  'escena.estrella':
+    'Una estrella lejana, en cambio, se ve en la misma dirección desde las dos posiciones de la Tierra: su ángulo es prácticamente 0″. Por eso en las imágenes las estrellas quedan quietas y {objeto} salta: así se delata un cuerpo lejano del Sistema Solar.',
+  'escena.unaSola':
+    'Todas las épocas de este campo son de la pasada {n} de SPHEREx: las líneas son las de esas épocas, separadas por días y no por los seis meses que hay entre pasadas. Por eso el ángulo es chico y, a esta escala, las líneas se superponen.',
+  'escena.variasPasadas': 'Las épocas de este campo son de las pasadas {lista} de SPHEREx.',
+  'escena.fijaAlt':
+    'Captura de la escena del campo de Makemake: el Sol, las órbitas de los planetas y la órbita inclinada de Makemake, con la línea de visión desde la Tierra hacia el campo.',
+  'escena.fija':
+    'Este navegador no puede dibujar en 3D (WebGL), así que se muestra una imagen fija de la escena del campo de Makemake. El texto y el paso al visor funcionan igual.',
+  'escena.fijaOtroCampo':
+    'Este navegador no puede dibujar en 3D (WebGL), así que se muestra una imagen fija de la escena del campo de Makemake, no la de este campo. El texto y el paso al visor funcionan igual.',
 } as const
 
 export type Clave = keyof typeof es
@@ -380,6 +439,64 @@ const en: Record<Clave, string> = {
   'procedencia.pipeline': 'Generated with spherex-blink {version}; IRSA queried on {fecha}.',
   'procedencia.pila': 'This view combines several epochs; the card shows the last one chosen.',
   'creditos.titulo': 'Credits for this field',
+  'escena.documento': 'Solar System',
+  'escena.titulo': 'The Solar System at each pass',
+  'escena.bajadaObjeto': 'Where the Earth and {objeto} were when SPHEREx imaged the {campo} field.',
+  'escena.bajadaSinObjeto':
+    'Where the Earth and the planets were when SPHEREx imaged the {campo} field.',
+  'escena.campos': 'Scene fields',
+  'escena.noEncontrado': 'We could not find that field: “{id}” is not one of the demo fields.',
+  'escena.errorDeCarga': 'The field “{id}” could not be loaded: {detalle}',
+  'escena.verMakemake': 'See the Makemake scene',
+  'escena.avisoIlustrativa':
+    'Sizes and distances are not to scale: distances are compressed and bodies enlarged so they can be seen. Directions are the real ones.',
+  'escena.avisoReal':
+    'True scale for distances and sizes: bodies are smaller than a pixel and only their labels can be seen.',
+  'escena.avisoMakemake':
+    'The surface of Makemake is an illustration: nobody has imaged it. Its position does come from JPL Horizons.',
+  'escena.cargando3d': 'Loading the 3D scene…',
+  'escena.volando': 'Flying to the {campo} field…',
+  'escena.saltear': 'Skip the flight (Esc)',
+  'escena.epoca': 'Epoch {n} of {total}',
+  'escena.epocaValor': '{fecha}, pass {pasada}',
+  'escena.pasada': 'pass {n}',
+  'escena.escalaReal': 'True scale',
+  'escena.volar': 'Fly to the {campo} field',
+  'escena.origenConObjeto':
+    'The Earth and {objeto} come from JPL Horizons; the other planets are computed with astronomy-engine.',
+  'escena.origenSinObjeto': 'The Earth and the planets are computed with astronomy-engine.',
+  'escena.texturas': 'Textures by',
+  'escena.cuerpo.sol': 'Sun',
+  'escena.cuerpo.mercurio': 'Mercury',
+  'escena.cuerpo.venus': 'Venus',
+  'escena.cuerpo.tierra': 'Earth',
+  'escena.cuerpo.marte': 'Mars',
+  'escena.cuerpo.jupiter': 'Jupiter',
+  'escena.cuerpo.saturno': 'Saturn',
+  'escena.cuerpo.urano': 'Uranus',
+  'escena.cuerpo.neptuno': 'Neptune',
+  'escena.ilustracion': '{nombre} (illustration)',
+  'escena.paralajeTitulo': 'Lines of sight and parallax',
+  'escena.sinObjeto':
+    'This field does not follow a Solar System body. Each line goes from the Earth towards the centre of the field at one epoch, and they are all parallel: for something as far away as a star, the angle between them is practically 0″ even though the Earth moved to the other side of the Sun. What moves in this field is the star’s proper motion, not a Solar System parallax.',
+  'escena.unaEpoca': 'This field has a single epoch with geometry: there are no two lines to compare.',
+  'escena.lineas':
+    'Each line goes from the Earth towards {objeto} at one epoch. Between {fechaA} and {fechaB}, the Earth moved {base} AU and the two lines form an angle of {segundos}, that is {pixeles} of SPHEREx ({escala}″ per pixel).',
+  'escena.segundos': '{n}″',
+  'escena.pixeles': '{n} pixels',
+  'escena.paralajeTierra':
+    'Had {objeto} stood still, the change of viewpoint alone would have shifted it {segundos}″: that is the parallax. The rest is its own orbital motion. {objeto} is {distancia} AU from the Earth.',
+  'escena.estrella':
+    'A distant star, instead, is seen in the same direction from both positions of the Earth: its angle is practically 0″. That is why stars stay still in the images while {objeto} jumps: that is how a distant Solar System body gives itself away.',
+  'escena.unaSola':
+    'All the epochs of this field are from SPHEREx pass {n}: the lines are those of these epochs, days apart rather than the six months between passes. That is why the angle is small and, at this scale, the lines overlap.',
+  'escena.variasPasadas': 'The epochs of this field are from SPHEREx passes {lista}.',
+  'escena.fijaAlt':
+    'Capture of the scene of the Makemake field: the Sun, the planetary orbits and the inclined orbit of Makemake, with the line of sight from the Earth towards the field.',
+  'escena.fija':
+    'This browser cannot draw in 3D (WebGL), so a still image of the Makemake field scene is shown. The text and the way to the viewer work the same.',
+  'escena.fijaOtroCampo':
+    'This browser cannot draw in 3D (WebGL), so a still image of the Makemake field scene is shown, not the one for this field. The text and the way to the viewer work the same.',
 }
 
 export const TEXTOS: Record<Idioma, Record<Clave, string>> = { es, en }

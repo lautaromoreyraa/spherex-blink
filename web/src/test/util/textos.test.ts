@@ -76,6 +76,18 @@ describe('textos de la interfaz (RNF-06)', () => {
   it('ningún texto habla de descubrimientos ni de objetos nuevos (RNF-07)', () => {
     for (const texto of todosLosTextos()) expect(texto).not.toMatch(PROHIBIDAS)
   })
+
+  it('los textos de la escena 3D están en el diccionario y entran en esa revisión', () => {
+    // Si la escena volviera a tener textos sueltos en los componentes, este
+    // conteo bajaría y la revisión de RNF-07 dejaría de verlos.
+    for (const idioma of ['es', 'en'] as const) {
+      const deLaEscena = Object.entries(TEXTOS[idioma]).filter(([clave]) =>
+        clave.startsWith('escena.'),
+      )
+      expect(deLaEscena.length).toBeGreaterThanOrEqual(45)
+      for (const [clave, texto] of deLaEscena) expect(texto, clave).not.toMatch(PROHIBIDAS)
+    }
+  })
 })
 
 describe('traducir y formatear', () => {

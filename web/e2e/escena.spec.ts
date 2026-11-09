@@ -47,7 +47,7 @@ test('la escena muestra la fecha UTC, el aviso de escala y el paralaje', async (
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('El Sistema Solar en cada pasada')
   await expect(page.getByRole('note')).toContainText('no están a escala')
   await expect(page.getByRole('note')).toContainText('Makemake es una ilustración')
-  await expect(page.locator('.escena__fecha')).toContainText('2026-06-09 09:44:15 UTC')
+  await expect(page.locator('.escena__fecha')).toContainText('9 de jun de 2026, 09:44 UTC')
   await expect(page.getByText('137,4″')).toBeVisible()
   await expect(page.getByText('22,3 píxeles')).toBeVisible()
   await expect(page.getByText(/Todas las épocas de este campo son de la pasada 3/)).toBeVisible()
@@ -56,7 +56,7 @@ test('la escena muestra la fecha UTC, el aviso de escala y el paralaje', async (
   const tiempo = page.getByLabel(/Época 1 de 9/)
   await tiempo.focus()
   await page.keyboard.press('End')
-  await expect(page.locator('.escena__fecha')).toContainText('2026-06-13 11:29:28 UTC')
+  await expect(page.locator('.escena__fecha')).toContainText('13 de jun de 2026, 11:29 UTC')
   expect(errores).toEqual([])
 })
 
@@ -174,4 +174,37 @@ test('un campo sin geometría no enlaza a la escena', async ({ page }) => {
   await page.goto('/campo/estrella-de-barnard')
   await expect(page.getByRole('heading', { level: 1, name: 'Estrella de Barnard' })).toBeVisible()
   await expect(page.getByRole('link', { name: /en el Sistema Solar/ })).toHaveCount(0)
+})
+
+test.describe('en inglés (RNF-06)', () => {
+  test.use({ locale: 'en-GB' })
+
+  test('la escena, el panel y los rótulos salen traducidos', async ({ page }) => {
+    await page.goto('/escena/makemake')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('The Solar System at each pass')
+    await expect(page.getByRole('note')).toContainText('not to scale')
+    await expect(page.getByRole('note')).toContainText('Makemake is an illustration')
+    await expect(page.locator('.escena__fecha')).toContainText('9 Jun 2026, 09:44 UTC')
+    await expect(page.getByText('137.4″')).toBeVisible()
+    await expect(page.getByText('22.3 pixels')).toBeVisible()
+    for (const nombre of ['Sun', 'Earth', 'Jupiter', 'Makemake (illustration)']) {
+      await expect(page.getByRole('button', { name: nombre, exact: true })).toBeAttached()
+    }
+    await expect(page.getByRole('button', { name: 'True scale' })).toBeVisible()
+    await page
+      .locator('.escena__acciones')
+      .getByRole('button', { name: 'Fly to the Makemake field' })
+      .click()
+    await expect(page.getByRole('button', { name: 'Skip the flight (Esc)' })).toBeFocused()
+  })
+
+  test('sin WebGL, el texto alternativo de la imagen fija también', async ({ page }) => {
+    await sinWebGL(page)
+    await page.goto('/escena/estrella-de-barnard')
+    await expect(
+      page.getByRole('img', { name: /Capture of the scene of the Makemake field/ }),
+    ).toBeVisible()
+    await expect(page.getByText(/not the one for this field/)).toBeVisible()
+    await expect(page.getByText(/passes 1, 2, and 3/)).toBeVisible()
+  })
 })

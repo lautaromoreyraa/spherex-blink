@@ -21,7 +21,7 @@ import {
   type PuntoDeEscena,
 } from '../../util/escalas.ts'
 import { aVector } from '../../util/paralaje.ts'
-import { MAKEMAKE, PLANETAS_DE_LA_ESCENA, SOL } from './cuerpos.ts'
+import { MAKEMAKE, NOMBRE_DE_MAKEMAKE, PLANETAS_DE_LA_ESCENA, SOL } from './cuerpos.ts'
 
 /**
  * Todo lo que la escena dibuja en una época, ya en coordenadas de three.js.
@@ -30,9 +30,13 @@ import { MAKEMAKE, PLANETAS_DE_LA_ESCENA, SOL } from './cuerpos.ts'
 
 export interface CuerpoEnEscena {
   id: string
-  nombre: string
-  /** Lo que lee el lector de pantalla y el rótulo. */
-  rotulo: string
+  /**
+   * Nombre propio del objeto del campo (sale de `geometria`); null para el
+   * Sol y los planetas, cuyo rótulo se traduce por id (RNF-06).
+   */
+  nombre: string | null
+  /** La textura es inventada y el rótulo lo tiene que decir (RNF-07). */
+  ilustracion: boolean
   posicion: PuntoDeEscena
   radio: number
   /** Sin textura (null) se dibuja liso: no se inventa la superficie. */
@@ -99,8 +103,8 @@ export function armarModelo(campo: Campo, indiceDeEpoca: number, modo: ModoDeEsc
   const cuerpos: CuerpoEnEscena[] = [
     {
       id: 'sol',
-      nombre: SOL.nombre,
-      rotulo: SOL.nombre,
+      nombre: null,
+      ilustracion: false,
       posicion: [0, 0, 0],
       radio: radioEnEscena(SOL.radioKm, modo),
       textura: SOL.textura,
@@ -115,8 +119,8 @@ export function armarModelo(campo: Campo, indiceDeEpoca: number, modo: ModoDeEsc
     const posicion = planeta === 'tierra' ? tierraEn(campo, epoca) : posicionHeliocentrica(planeta, fecha)
     cuerpos.push({
       id: planeta,
-      nombre: datos.nombre,
-      rotulo: datos.nombre,
+      nombre: null,
+      ilustracion: false,
       posicion: aEscena(posicion, modo),
       radio: radioEnEscena(datos.radioKm, modo),
       textura: datos.textura,
@@ -134,11 +138,11 @@ export function armarModelo(campo: Campo, indiceDeEpoca: number, modo: ModoDeEsc
   const objeto = objetoEn(campo, epoca)
   const nombreDelObjeto = campo.geometria?.objeto.nombre ?? null
   if (objeto && nombreDelObjeto) {
-    const esMakemake = nombreDelObjeto === MAKEMAKE.nombre
+    const esMakemake = nombreDelObjeto === NOMBRE_DE_MAKEMAKE
     cuerpos.push({
       id: 'objeto',
       nombre: nombreDelObjeto,
-      rotulo: esMakemake ? `${nombreDelObjeto} (ilustración)` : nombreDelObjeto,
+      ilustracion: esMakemake,
       posicion: aEscena(objeto, modo),
       radio: radioEnEscena(esMakemake ? MAKEMAKE.radioKm : 500, modo),
       textura: esMakemake ? MAKEMAKE.textura : null,

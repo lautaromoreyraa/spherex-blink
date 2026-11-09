@@ -6,6 +6,8 @@ import type { CuerpoEnEscena } from './modelo.ts'
 
 interface Props {
   cuerpo: CuerpoEnEscena
+  /** Nombre ya traducido: lo que muestra el rótulo y lee el lector de pantalla. */
+  rotulo: string
   elegido: boolean
   onElegir: (cuerpo: CuerpoEnEscena) => void
   colorLiso: string
@@ -17,7 +19,7 @@ interface Props {
  * lector de pantalla lo anuncia, cosa que una malla del lienzo no puede
  * hacer (RF-34, RNF-03).
  */
-export default function Cuerpo({ cuerpo, elegido, onElegir, colorLiso }: Props) {
+export default function Cuerpo({ cuerpo, rotulo, elegido, onElegir, colorLiso }: Props) {
   return (
     <group position={cuerpo.posicion as [number, number, number]}>
       {cuerpo.textura ? (
@@ -35,7 +37,7 @@ export default function Cuerpo({ cuerpo, elegido, onElegir, colorLiso }: Props) 
           aria-pressed={elegido}
           onClick={() => onElegir(cuerpo)}
         >
-          {cuerpo.rotulo}
+          {rotulo}
         </button>
       </Html>
     </group>

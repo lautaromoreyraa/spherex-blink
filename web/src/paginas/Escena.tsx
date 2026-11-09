@@ -5,11 +5,12 @@ import ImagenFijaDeLaEscena from '../componentes/espacio/ImagenFijaDeLaEscena.ts
 import PanelDeParalaje from '../componentes/espacio/PanelDeParalaje.tsx'
 import '../estilos/escena.css'
 import { useDatosDeLaEscena } from '../hooks/useDatosDeLaEscena.ts'
+import { useIdioma } from '../hooks/useIdioma.ts'
 import { useMovimientoReducido } from '../hooks/useMovimientoReducido.ts'
 import { useNavegacion } from '../hooks/useRuta.ts'
 import type { ModoDeEscala } from '../util/escalas.ts'
-import { fechaUtc } from '../util/formatos.ts'
 import { direccion, type LlegadaDesdeLaEscena } from '../util/rutas.ts'
+import { formatearFechaUtc } from '../util/textos.ts'
 import { hayWebGL } from '../util/webgl.ts'
 
 // three, drei y astronomy-engine viven en este chunk: sin WebGL no se bajan
@@ -18,33 +19,34 @@ const EscenaEspacial = lazy(() => import('../componentes/espacio/EscenaEspacial.
 
 export default function Escena({ id }: { id: string }) {
   const datos = useDatosDeLaEscena(id)
+  const { t } = useIdioma()
 
   useEffect(() => {
-    document.title = 'Sistema Solar · spherex-blink'
-  }, [])
+    document.title = `${t('escena.documento')} · spherex-blink`
+  }, [t])
 
   if (datos.estado === 'cargando') {
     return (
       <section className="escena" aria-busy="true">
-        <p className="escena__estado">Cargando la escena…</p>
+        <p className="escena__estado">{t('cargando')}</p>
       </section>
     )
   }
   if (datos.estado === 'no-encontrado' || datos.estado === 'error') {
     return (
       <section className="escena">
-        <h1 className="escena__titulo">El Sistema Solar en cada pasada</h1>
+        <h1 className="escena__titulo">{t('escena.titulo')}</h1>
         <p className="escena__estado" role="alert">
           {datos.estado === 'no-encontrado'
-            ? `No encontramos ese campo: «${id}» no es uno de los campos de la demo.`
-            : `No se pudo cargar el campo «${id}»: ${datos.mensaje}`}
+            ? t('escena.noEncontrado', { id })
+            : t('escena.errorDeCarga', { id, detalle: datos.mensaje })}
         </p>
         <p>
           <Enlace href={direccion({ pagina: 'escena', id: 'makemake' })}>
-            Ver la escena de Makemake
+            {t('escena.verMakemake')}
           </Enlace>{' '}
           ·{' '}
-          <Enlace href={direccion({ pagina: 'inicio' })}>Ver los campos</Enlace>
+          <Enlace href={direccion({ pagina: 'inicio' })}>{t('noEncontrada.volver')}</Enlace>
         </p>
       </section>
     )
@@ -55,6 +57,7 @@ export default function Escena({ id }: { id: string }) {
 
 function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
   const { navegar } = useNavegacion()
+  const { t, idioma } = useIdioma()
   const movimientoReducido = useMovimientoReducido()
   const [conWebGL] = useState(() => hayWebGL())
   const [indiceDeEpoca, setIndiceDeEpoca] = useState(0)
@@ -65,6 +68,8 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
   const epoca = campo.epocas[indiceDeEpoca]!
   const total = campo.epocas.length
   const esMakemake = campo.geometria?.objeto.nombre === 'Makemake'
+  const nombreDelCampo = campo.nombre[idioma]
+  const fecha = formatearFechaUtc(epoca.fecha_utc, idioma)
 
   const irAlCampo = useCallback(() => {
     // El visor abre en la primera época; el estado le dice de dónde viene
@@ -92,13 +97,14 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
     <section className="escena" aria-labelledby="escena-titulo">
       <header className="escena__encabezado">
         <h1 id="escena-titulo" className="escena__titulo">
-          El Sistema Solar en cada pasada
+          {t('escena.titulo')}
         </h1>
         <p className="escena__bajada">
-          Dónde estaban la Tierra y {campo.geometria?.objeto.nombre ?? 'los planetas'} cuando SPHEREx
-          fotografió el campo {campo.nombre.es}.
+          {campo.geometria
+            ? t('escena.bajadaObjeto', { objeto: campo.geometria.objeto.nombre, campo: nombreDelCampo })
+            : t('escena.bajadaSinObjeto', { campo: nombreDelCampo })}
         </p>
-        <nav aria-label="Campos de la escena">
+        <nav aria-label={t('escena.campos')}>
           <ul className="escena__campos">
             {indice.campos.map((c) => (
               <li key={c.id}>
@@ -106,7 +112,7 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
                   href={direccion({ pagina: 'escena', id: c.id })}
                   aria-current={c.id === campo.id ? 'page' : undefined}
                 >
-                  {c.nombre.es}
+                  {c.nombre[idioma]}
                 </Enlace>
               </li>
             ))}
@@ -115,16 +121,13 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
       </header>
 
       <p className="escena__aviso" role="note">
-        {modo === 'ilustrativa'
-          ? 'Tamaños y distancias no están a escala: las distancias están comprimidas y los cuerpos agrandados para que se vean. Las direcciones sí son las reales.'
-          : 'Escala real de distancias y tamaños: los cuerpos son más chicos que un píxel y sólo se ven sus rótulos.'}
-        {esMakemake &&
-          ' La superficie de Makemake es una ilustración: nadie la fotografió. Su posición sí es la de JPL Horizons.'}
+        {t(modo === 'ilustrativa' ? 'escena.avisoIlustrativa' : 'escena.avisoReal')}
+        {esMakemake && ` ${t('escena.avisoMakemake')}`}
       </p>
 
       <div className="escena__lienzo">
         {conWebGL ? (
-          <Suspense fallback={<p className="escena__estado">Cargando la escena 3D…</p>}>
+          <Suspense fallback={<p className="escena__estado">{t('escena.cargando3d')}</p>}>
             <EscenaEspacial
               campo={campo}
               indiceDeEpoca={indiceDeEpoca}
@@ -140,9 +143,9 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
         )}
         {volando && (
           <div className="escena__vuelo" role="status">
-            <span>Volando al campo {campo.nombre.es}…</span>
+            <span>{t('escena.volando', { campo: nombreDelCampo })}</span>
             <button ref={saltear} type="button" className="escena__boton" onClick={irAlCampo}>
-              Saltear el vuelo (Esc)
+              {t('escena.saltear')}
             </button>
           </div>
         )}
@@ -151,7 +154,7 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
       <div className="escena__controles">
         <div className="escena__tiempo">
           <label htmlFor="escena-epoca">
-            Época {indiceDeEpoca + 1} de {total}
+            {t('escena.epoca', { n: indiceDeEpoca + 1, total })}
           </label>
           <input
             id="escena-epoca"
@@ -161,12 +164,12 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
             step={1}
             value={indiceDeEpoca}
             disabled={volando}
-            aria-valuetext={`${fechaUtc(epoca.fecha_utc)}, pasada ${epoca.pasada}`}
+            aria-valuetext={t('escena.epocaValor', { fecha, pasada: epoca.pasada })}
             onChange={(e) => setIndiceDeEpoca(Number(e.target.value))}
           />
           <p className="escena__fecha" aria-live="polite">
-            <time dateTime={epoca.fecha_utc}>{fechaUtc(epoca.fecha_utc)}</time>
-            <span className="escena__pasada"> · pasada {epoca.pasada}</span>
+            <time dateTime={epoca.fecha_utc}>{fecha}</time>
+            <span className="escena__pasada"> · {t('escena.pasada', { n: epoca.pasada })}</span>
           </p>
         </div>
         <div className="escena__acciones">
@@ -177,7 +180,7 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
             disabled={volando || !conWebGL}
             onClick={() => setModo((m) => (m === 'real' ? 'ilustrativa' : 'real'))}
           >
-            Escala real
+            {t('escena.escalaReal')}
           </button>
           <button
             type="button"
@@ -185,7 +188,7 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
             disabled={volando}
             onClick={volar}
           >
-            Volar al campo {campo.nombre.es}
+            {t('escena.volar', { campo: nombreDelCampo })}
           </button>
         </div>
       </div>
@@ -194,9 +197,9 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
 
       <p className="escena__creditos">
         {campo.geometria
-          ? `La Tierra y ${campo.geometria.objeto.nombre} salen de JPL Horizons; los demás planetas se calculan con astronomy-engine.`
-          : 'La Tierra y los planetas se calculan con astronomy-engine.'}{' '}
-        Texturas de{' '}
+          ? t('escena.origenConObjeto', { objeto: campo.geometria.objeto.nombre })
+          : t('escena.origenSinObjeto')}{' '}
+        {t('escena.texturas')}{' '}
         <a href="https://www.solarsystemscope.com/textures/" rel="noopener noreferrer">
           Solar System Scope
         </a>{' '}
