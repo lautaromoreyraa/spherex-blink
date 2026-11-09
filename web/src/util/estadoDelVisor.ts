@@ -68,12 +68,23 @@ function limiteInicial(campo: Campo): number {
   )
 }
 
-export function estadoInicial(campo: Campo, movimientoReducido: boolean): EstadoDelVisor {
+/** Con qué época abre el visor y si arranca quieto (llegada desde la escena, RF-36). */
+export interface Apertura {
+  epocaId: string
+  enPausa: boolean
+}
+
+export function estadoInicial(
+  campo: Campo,
+  movimientoReducido: boolean,
+  apertura: Apertura | null = null,
+): EstadoDelVisor {
   const p = parametrosDeEstiramiento(campo.estiramiento)
+  const pedida = apertura ? campo.epocas.findIndex((e) => e.id === apertura.epocaId) : -1
   return {
-    indice: 0,
+    indice: Math.max(0, pedida),
     // RNF-04: con movimiento reducido el visor abre en pausa.
-    reproduciendo: !movimientoReducido && campo.epocas.length > 1,
+    reproduciendo: !movimientoReducido && !apertura?.enPausa && campo.epocas.length > 1,
     cambiosPorSegundo: CAMBIOS_POR_SEGUNDO_INICIAL,
     elegidas: campo.epocas.map((_, i) => i),
     vista: 'imagen',

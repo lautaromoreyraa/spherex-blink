@@ -41,6 +41,8 @@ interface Props {
   despachar: Dispatch<Accion>
   /** Cabecera de la página: en pantallas anchas va a la derecha de la imagen. */
   cabecera?: ReactNode
+  /** El lienzo toma el foco al aparecer (llegada desde la escena, RF-36). */
+  enfocarAlMontar?: boolean
 }
 
 const VISTAS: VistaDelVisor[] = ['imagen', 'diferencia', 'apilado', 'rastro']
@@ -57,7 +59,14 @@ function esCampoDeTexto(elemento: EventTarget | null): boolean {
  * objetos conocidos (RF-14), el zoom y las coordenadas (RF-16), dibujado en
  * WebGL (RF-37).
  */
-export default function Visor({ campo, pixeles, estado, despachar, cabecera }: Props) {
+export default function Visor({
+  campo,
+  pixeles,
+  estado,
+  despachar,
+  cabecera,
+  enfocarAlMontar,
+}: Props) {
   const { t, idioma } = useIdioma()
   const idAyuda = useId()
   const idTitulo = useId()
@@ -183,6 +192,7 @@ export default function Visor({ campo, pixeles, estado, despachar, cabecera }: P
           alPuntero={setPuntero}
           alPintor={setPintor}
           alTecla={(evento: KeyboardEvent<HTMLDivElement>) => alTecla(evento)}
+          enfocarAlMontar={enfocarAlMontar}
           superposicion={(lienzo) =>
             estado.marcadores ? (
               <CapaDeMarcadores

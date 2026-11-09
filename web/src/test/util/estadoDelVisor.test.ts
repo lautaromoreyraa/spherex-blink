@@ -13,6 +13,19 @@ describe('estado del visor', () => {
     expect(estadoInicial(campo, true).reproduciendo).toBe(false)
   })
 
+  it('llegando desde la escena abre en la época del vuelo y en pausa (RF-36)', () => {
+    const ultima = campo.epocas.at(-1)!
+    const e = estadoInicial(campo, false, { epocaId: ultima.id, enPausa: true })
+    expect(e.indice).toBe(campo.epocas.length - 1)
+    expect(e.reproduciendo).toBe(false)
+  })
+
+  it('una época del vuelo que no existe abre en la primera', () => {
+    const e = estadoInicial(campo, false, { epocaId: 'no-esta', enPausa: false })
+    expect(e.indice).toBe(0)
+    expect(e.reproduciendo).toBe(true)
+  })
+
   it('arranca con el rango y el límite del pipeline, en inferno y con los marcadores de Gaia apagados', () => {
     const e = estadoInicial(campo, true)
     expect(e.rango).toEqual({ minimo: 0.5, maximo: 40 })

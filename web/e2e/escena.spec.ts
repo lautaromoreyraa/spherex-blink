@@ -1,8 +1,31 @@
 import { expect, test, type Page } from '@playwright/test'
+import { sinRedExterna, vigilarErrores } from './ayudas.ts'
 
 // La escena 3D (RF-34 a RF-36, RNF-13). Headless Chromium dibuja WebGL por
 // software, así que el lienzo existe; lo que se mira acá es lo que el DOM
 // garantiza: textos, rótulos accesibles, el vuelo y la alternativa sin WebGL.
+// Todo corre bajo la CSP de public/_headers: una violación sale como error
+// de consola y vigilarErrores la junta.
+
+test.use({ locale: 'es-AR' })
+
+const volar = (page: Page) =>
+  page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
+
+/** El visor de Makemake abierto en su primera época, con el foco adentro (RF-36). */
+async function llegoAlVisor(page: Page) {
+  await page.waitForURL('**/campo/makemake')
+  const fecha = page.locator('[data-prueba="fecha-visible"]')
+  await expect(fecha).toHaveText('9 de jun de 2026, 09:44 UTC')
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.querySelector('.visor')?.contains(document.activeElement)),
+    )
+    .toBe(true)
+  // Abre quieto: la primera época sigue a la vista un rato después.
+  await page.waitForTimeout(1200)
+  await expect(fecha).toHaveText('9 de jun de 2026, 09:44 UTC')
+}
 
 function sinWebGL(page: Page) {
   return page.addInitScript(() => {
@@ -16,9 +39,10 @@ function sinWebGL(page: Page) {
 }
 
 test('la escena muestra la fecha UTC, el aviso de escala y el paralaje', async ({ page }) => {
-  const errores: string[] = []
-  page.on('pageerror', (error) => errores.push(error.message))
+  const errores = vigilarErrores(page)
   await page.goto('/escena/makemake')
+  // Las texturas y el lienzo, cargados bajo la CSP.
+  await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toBeAttached()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('El Sistema Solar en cada pasada')
   await expect(page.getByRole('note')).toContainText('no están a escala')
@@ -54,34 +78,46 @@ test('el interruptor de escala real cambia el aviso', async ({ page }) => {
   await expect(page.getByRole('note')).toContainText('Escala real de distancias y tamaños')
 })
 
-test('desde la escena se vuela al campo de Makemake', async ({ page }) => {
+test('desde la escena se vuela al visor del campo de Makemake', async ({ page }) => {
+  const errores = vigilarErrores(page)
+  await sinRedExterna(page)
   await page.goto('/escena/makemake')
   await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toBeAttached()
   const inicio = Date.now()
-  await page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
-  await expect(page.getByRole('status')).toContainText('Volando al campo Makemake')
+  await volar(page)
+  await expect(page.getByText('Volando al campo Makemake…')).toBeVisible()
   await page.waitForURL('**/campo/makemake', { timeout: 5000 })
   // 2,4 s de vuelo más el margen de una máquina de CI cargada.
   expect(Date.now() - inicio).toBeLessThan(4500)
+  await llegoAlVisor(page)
+  expect(errores).toEqual([])
 })
 
-test('el vuelo se saltea con Escape', async ({ page }) => {
+test('el vuelo se saltea con Escape y el foco queda en el visor', async ({ page }) => {
   await page.goto('/escena/makemake')
-  await page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
+  await volar(page)
   await expect(page.getByRole('button', { name: 'Saltear el vuelo (Esc)' })).toBeFocused()
   const inicio = Date.now()
   await page.keyboard.press('Escape')
   await page.waitForURL('**/campo/makemake')
   expect(Date.now() - inicio).toBeLessThan(1500)
+  await llegoAlVisor(page)
 })
 
 test.describe('con movimiento reducido', () => {
-  test('el vuelo es un corte directo', async ({ page }) => {
+  test('el vuelo es un corte directo al visor', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/escena/makemake')
-    await page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
+    await volar(page)
     await page.waitForURL('**/campo/makemake', { timeout: 1000 })
+    await llegoAlVisor(page)
   })
+})
+
+test('un campo que no existe se dice «No encontramos ese campo»', async ({ page }) => {
+  await page.goto('/escena/no-existe')
+  await expect(page.getByRole('alert')).toContainText('No encontramos ese campo')
+  await expect(page.getByRole('link', { name: 'Ver la escena de Makemake' })).toBeVisible()
 })
 
 test('sin WebGL muestra la imagen fija y no baja la escena 3D', async ({ page }) => {
@@ -93,8 +129,14 @@ test('sin WebGL muestra la imagen fija y no baja la escena 3D', async ({ page })
   await expect(page.getByRole('img', { name: /Captura de la escena/ })).toBeVisible()
   await expect(page.getByText('137,4″')).toBeVisible()
   expect(pedidos.some((url) => /EscenaEspacial-.*\.js/.test(url))).toBe(false)
-  await page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
-  await page.waitForURL('**/campo/makemake')
+  await volar(page)
+  await llegoAlVisor(page)
+})
+
+test('sin WebGL, en otro campo la imagen fija aclara que es la de Makemake', async ({ page }) => {
+  await sinWebGL(page)
+  await page.goto('/escena/estrella-de-barnard')
+  await expect(page.getByText(/escena del campo de Makemake, no la de este campo/)).toBeVisible()
 })
 
 test('la página de inicio no descarga la escena 3D', async ({ page }) => {
