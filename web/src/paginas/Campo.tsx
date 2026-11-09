@@ -77,6 +77,12 @@ export default function Campo({ id }: { id: string }) {
             {t('campo.cantidadDeAvisos', { n: datos.avisos.length })}
           </a>
         ) : null}
+        {/* Sólo los campos que siguen un cuerpo del Sistema Solar tienen escena (RF-34). */}
+        {datos.geometria ? (
+          <Enlace href={direccion({ pagina: 'escena', id: datos.id })}>
+            {t('campo.escena', { objeto: datos.geometria.objeto.nombre })}
+          </Enlace>
+        ) : null}
         <Enlace href={direccion({ pagina: 'limites' })}>{t('campo.limites')}</Enlace>
       </p>
     </header>

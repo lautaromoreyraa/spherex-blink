@@ -37,6 +37,7 @@ const es = {
   'inicio.queMirar': 'Qué mirar: {objeto}',
   'inicio.miniaturaAlt': 'Mediana de las épocas del campo {nombre}',
   'inicio.limites': 'Antes de creerle a lo que ves: qué puede y qué no puede esta herramienta',
+  'inicio.escena': 'Por qué se mueve Makemake: el Sistema Solar en las fechas de cada foto',
   'inicio.sinCampos': 'Todavía no hay campos generados.',
 
   'campo.volver': 'Todos los campos',
@@ -47,6 +48,7 @@ const es = {
   'campo.detector': 'Detector',
   'campo.epocas': 'Épocas',
   'campo.limites': 'Qué puede y qué no puede mostrar este visor',
+  'campo.escena': 'Ver dónde estaba {objeto} en el Sistema Solar',
   'campo.cantidadDeAvisos': 'Este campo tiene {n} avisos: leelos antes de sacar conclusiones',
   'avisos.titulo': 'Avisos de este campo',
 
@@ -222,6 +224,7 @@ const en: Record<Clave, string> = {
   'inicio.queMirar': 'What to look for: {objeto}',
   'inicio.miniaturaAlt': 'Median of the epochs of the {nombre} field',
   'inicio.limites': 'Before you believe what you see: what this tool can and cannot do',
+  'inicio.escena': 'Why Makemake moves: the Solar System on the date of each image',
   'inicio.sinCampos': 'No fields have been generated yet.',
 
   'campo.volver': 'All fields',
@@ -232,6 +235,7 @@ const en: Record<Clave, string> = {
   'campo.detector': 'Detector',
   'campo.epocas': 'Epochs',
   'campo.limites': 'What this viewer can and cannot show',
+  'campo.escena': 'See where {objeto} was in the Solar System',
   'campo.cantidadDeAvisos': 'This field has {n} notes: read them before drawing conclusions',
   'avisos.titulo': 'Notes on this field',
 

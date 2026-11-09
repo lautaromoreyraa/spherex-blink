@@ -158,3 +158,20 @@ test('la escena anda sin red externa y sin desborde en un celular', async ({ pag
   )
   expect(desborda).toBe(false)
 })
+
+test('se llega a la escena desde el inicio y desde el visor de Makemake', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: /Por qué se mueve Makemake/ }).click()
+  await expect(page).toHaveURL(/\/escena\/makemake$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('El Sistema Solar en cada pasada')
+
+  await page.goto('/campo/makemake')
+  await page.getByRole('link', { name: 'Ver dónde estaba Makemake en el Sistema Solar' }).click()
+  await expect(page).toHaveURL(/\/escena\/makemake$/)
+})
+
+test('un campo sin geometría no enlaza a la escena', async ({ page }) => {
+  await page.goto('/campo/estrella-de-barnard')
+  await expect(page.getByRole('heading', { level: 1, name: 'Estrella de Barnard' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /en el Sistema Solar/ })).toHaveCount(0)
+})
