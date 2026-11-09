@@ -43,16 +43,21 @@ export interface Campo {
   /**
    * Mediana de las épocas
    */
-  referencia: string
+  referencia: string | null
   /**
    * Máximo por píxel (RF-17)
    */
   rastro: string | null
   conocidos: ObjetoConocido[]
   candidatos: Candidato[]
+  /**
+   * Para la escena 3D; null si el campo no sigue un cuerpo del Sistema Solar
+   */
+  geometria: Geometria | null
   limites: Limites | null
   avisos: TextoTraducido[]
   creditos: string
+  procedencia: Procedencia
 }
 /**
  * Texto en los dos idiomas de la interfaz (RNF-06).
@@ -180,9 +185,13 @@ export interface FuenteDeEpoca {
  */
 export interface ObjetoConocido {
   nombre: string
-  tipo: 'estrella' | 'asteroide' | 'cometa' | 'tno' | 'planeta' | 'enana-marron'
+  tipo: 'estrella' | 'asteroide' | 'cometa' | 'tno' | 'planeta-enano' | 'enana-marron'
   posiciones: PosicionEsperada[]
-  fuente: 'SkyBoT' | 'Horizons' | 'SIMBAD'
+  /**
+   * Mediciones en la imagen; vacía si no se midió
+   */
+  deteccion: DeteccionDeConocido[]
+  fuente: 'SkyBoT' | 'Horizons' | 'SIMBAD' | 'Gaia DR3'
   consultado_en: string
   magnitud: Magnitud | null
 }
@@ -214,6 +223,38 @@ export interface PosicionEsperada {
    */
   y: number
   dentro_del_campo: boolean
+  /**
+   * Distancia al observador en UA; null para las estrellas
+   */
+  distancia_ua: number | null
+}
+/**
+ * Dónde se midió un objeto conocido en una época y a cuánto quedó de lo esperado.
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "DeteccionDeConocido".
+ */
+export interface DeteccionDeConocido {
+  /**
+   * Identificador en kebab-case
+   */
+  epoca_id: string
+  /**
+   * Centroide medido, en píxeles de la rejilla
+   */
+  x: number
+  /**
+   * Centroide medido, en píxeles de la rejilla
+   */
+  y: number
+  /**
+   * Relación señal/ruido de la medición
+   */
+  snr: number
+  /**
+   * Distancia a la posición esperada
+   */
+  distancia_px: number
 }
 /**
  * This interface was referenced by `Contrato`'s JSON-Schema
@@ -281,6 +322,45 @@ export interface Identificacion {
   distancia_arcsec: number | null
 }
 /**
+ * Dónde estaban la Tierra y el objeto cuando se tomó cada época (JPL Horizons).
+ *
+ * La escena 3D dibuja exactamente esta geometría, la misma que usó el
+ * pipeline para marcar al objeto, en vez de recalcularla en el navegador.
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "Geometria".
+ */
+export interface Geometria {
+  marco: 'heliocentrico-ecliptico-J2000'
+  tierra: PuntoHeliocentrico[]
+  objeto: ObjetoEnLaEscena
+}
+/**
+ * Posición de un cuerpo en una época, centrada en el Sol (RF-34, RF-35).
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "PuntoHeliocentrico".
+ */
+export interface PuntoHeliocentrico {
+  /**
+   * Identificador en kebab-case
+   */
+  epoca_id: string
+  x_ua: number
+  y_ua: number
+  z_ua: number
+}
+/**
+ * El cuerpo del Sistema Solar del campo, con su posición en cada época.
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "ObjetoEnLaEscena".
+ */
+export interface ObjetoEnLaEscena {
+  nombre: string
+  posiciones: PuntoHeliocentrico[]
+}
+/**
  * Límites medidos por inyección de objetos falsos (RF-27).
  *
  * This interface was referenced by `Contrato`'s JSON-Schema
@@ -312,6 +392,19 @@ export interface Profundidad {
 export interface PuntoDeRecuperacion {
   brillo: number
   fraccion_recuperada: number
+}
+/**
+ * Con qué versión del pipeline y cuándo se consultó IRSA (RNF-12).
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "Procedencia".
+ */
+export interface Procedencia {
+  version_pipeline: string
+  /**
+   * Cuándo se buscaron las observaciones
+   */
+  irsa_consultado_en: string
 }
 /**
  * Cuerpo de toda respuesta de error.

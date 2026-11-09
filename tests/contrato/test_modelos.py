@@ -74,3 +74,39 @@ def test_un_pedido_de_trabajo_es_por_coordenadas_o_por_nombre() -> None:
     assert isinstance(por_nombre, PedidoPorNombre)
     with pytest.raises(ValidationError):
         adaptador.validate_python({"tamano_grados": 0.1, "detector": "D1"})
+
+
+def test_rechaza_una_deteccion_de_una_epoca_que_no_existe() -> None:
+    datos = _campo()
+    datos["conocidos"][0]["deteccion"][0]["epoca_id"] = "no-existe"
+
+    with pytest.raises(ValidationError, match="no-existe"):
+        Campo.model_validate(datos)
+
+
+def test_acepta_la_geometria_y_rechaza_una_epoca_que_no_existe() -> None:
+    punto = {"epoca_id": "p1-a", "x_ua": -0.2, "y_ua": -0.99, "z_ua": 0.0}
+    datos = _campo()
+    datos["geometria"] = {
+        "marco": "heliocentrico-ecliptico-J2000",
+        "tierra": [punto],
+        "objeto": {"nombre": "Makemake", "posiciones": [punto | {"x_ua": -45.0}]},
+    }
+
+    assert Campo.model_validate(datos).geometria is not None
+
+    datos["geometria"]["tierra"][0]["epoca_id"] = "no-existe"
+    with pytest.raises(ValidationError, match="no-existe"):
+        Campo.model_validate(datos)
+
+
+def test_rechaza_un_marco_de_referencia_desconocido() -> None:
+    datos = _campo()
+    datos["geometria"] = {
+        "marco": "geocentrico",
+        "tierra": [],
+        "objeto": {"nombre": "X", "posiciones": []},
+    }
+
+    with pytest.raises(ValidationError):
+        Campo.model_validate(datos)

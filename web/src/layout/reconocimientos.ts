@@ -6,17 +6,19 @@
  * Origen de cada texto, consultado el 2026-11-08:
  * - SPHEREx: SPHEREx Quick Release Overview de IRSA
  *   (https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_qr.html).
- *   Además pide citar el DOI del Quick Release usado; se agrega cuando el
- *   pipeline fije la versión de los datos (H2, TAR-07).
+ *   Además pide citar el DOI de cada Quick Release usado: los campos de la
+ *   demo salen de QR2 y QR3.
  * - IRSA: «Acknowledging IRSA» (https://irsa.ipac.caltech.edu/ack.html).
  * - SkyBoT: página del servicio en IMCCE (https://ssp.imcce.fr/webservices/skybot/).
  * - JPL Horizons: referencia que da el manual de Horizons
  *   (https://ssd.jpl.nasa.gov/horizons/manual.html#ack). La fecha de consulta
  *   de cada campo está en `conocidos[].consultado_en`.
  * - SIMBAD: documentación de CDS (https://cdsxmatch.cds.unistra.fr/xmatch/doc/simbad-ack.html).
+ * - Gaia: créditos de ESA (https://www.cosmos.esa.int/web/gaia-users/credits).
  *
- * TAR-07 revisa los términos de redistribución de cada fuente antes de
- * publicar los campos; si cambia algún texto, se cambia acá y en CREDITS.md.
+ * Los términos de uso de IRSA (https://irsa.ipac.caltech.edu/data_use_terms.html)
+ * no restringen el uso de los datos públicos y piden estos reconocimientos
+ * (TAR-07). Si cambia algún texto, se cambia acá y en CREDITS.md.
  */
 export interface Reconocimiento {
   fuente: string
@@ -30,6 +32,11 @@ export const reconocimientos: readonly Reconocimiento[] = [
     enlace: 'https://irsa.ipac.caltech.edu/Missions/spherex.html',
     texto:
       'This publication makes use of data products from the Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the National Aeronautics and Space Administration.',
+  },
+  {
+    fuente: 'SPHEREx Quick Releases',
+    enlace: 'https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_qr.html',
+    texto: 'QR2: doi:10.26131/IRSA652. QR3: doi:10.26131/IRSA662.',
   },
   {
     fuente: 'IRSA',
@@ -52,5 +59,11 @@ export const reconocimientos: readonly Reconocimiento[] = [
     fuente: 'SIMBAD',
     enlace: 'https://simbad.cds.unistra.fr/',
     texto: 'This research has made use of the SIMBAD database, operated at CDS, Strasbourg, France.',
+  },
+  {
+    fuente: 'Gaia',
+    enlace: 'https://www.cosmos.esa.int/gaia',
+    texto:
+      'This work has made use of data from the European Space Agency (ESA) mission Gaia (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.',
   },
 ]

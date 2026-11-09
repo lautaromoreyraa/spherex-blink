@@ -4,7 +4,7 @@
 import type { Campo, Indice } from '../../api/tipos.ts'
 
 export const indiceDeEjemplo: Indice = {
-  version_contrato: '0.1.0',
+  version_contrato: '0.2.0',
   generado_en: '2026-11-08T12:00:00Z',
   campos: [
     {
@@ -125,6 +125,7 @@ export const campoDeEjemplo: Campo = {
           x: 24,
           y: 24,
           dentro_del_campo: true,
+          distancia_ua: null,
         },
         {
           epoca_id: 'p2-a',
@@ -133,6 +134,7 @@ export const campoDeEjemplo: Campo = {
           x: 24,
           y: 23.2,
           dentro_del_campo: true,
+          distancia_ua: null,
         },
         {
           epoca_id: 'p3-a',
@@ -141,7 +143,12 @@ export const campoDeEjemplo: Campo = {
           x: 24.1,
           y: 22.3,
           dentro_del_campo: true,
+          distancia_ua: null,
         },
+      ],
+      deteccion: [
+        { epoca_id: 'p1-a', x: 24.1, y: 24, snr: 52, distancia_px: 0.1 },
+        { epoca_id: 'p3-a', x: 24.2, y: 22.4, snr: 48.5, distancia_px: 0.14 },
       ],
       fuente: 'SIMBAD',
       consultado_en: '2026-11-08T12:00:00Z',
@@ -191,6 +198,7 @@ export const campoDeEjemplo: Campo = {
       },
     },
   ],
+  geometria: null,
   limites: {
     umbral_sigma: 5,
     profundidad_5sigma: {
@@ -228,4 +236,8 @@ export const campoDeEjemplo: Campo = {
   ],
   creditos:
     'Ejemplo hecho a mano. Los campos reales citan a IRSA/SPHEREx y a los catálogos usados.',
+  procedencia: {
+    version_pipeline: '0.1.0',
+    irsa_consultado_en: '2026-11-08T12:00:00Z',
+  },
 }

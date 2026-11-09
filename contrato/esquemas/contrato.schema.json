@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "contrato 0.1.0",
+  "$comment": "contrato 0.2.0",
   "title": "Contrato",
   "$defs": {
     "Campo": {
@@ -51,9 +51,17 @@
           "type": "array"
         },
         "referencia": {
-          "description": "Mediana de las épocas",
-          "minLength": 1,
-          "type": "string"
+          "anyOf": [
+            {
+              "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Mediana de las épocas"
         },
         "rastro": {
           "anyOf": [
@@ -80,6 +88,17 @@
           },
           "type": "array"
         },
+        "geometria": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Geometria"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Para la escena 3D; null si el campo no sigue un cuerpo del Sistema Solar"
+        },
         "limites": {
           "anyOf": [
             {
@@ -99,6 +118,9 @@
         "creditos": {
           "minLength": 1,
           "type": "string"
+        },
+        "procedencia": {
+          "$ref": "#/$defs/Procedencia"
         }
       },
       "required": [
@@ -115,9 +137,11 @@
         "rastro",
         "conocidos",
         "candidatos",
+        "geometria",
         "limites",
         "avisos",
-        "creditos"
+        "creditos",
+        "procedencia"
       ],
       "title": "Campo",
       "type": "object"
@@ -236,6 +260,43 @@
         "snr"
       ],
       "title": "Deteccion",
+      "type": "object"
+    },
+    "DeteccionDeConocido": {
+      "additionalProperties": false,
+      "description": "Dónde se midió un objeto conocido en una época y a cuánto quedó de lo esperado.",
+      "properties": {
+        "epoca_id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "x": {
+          "description": "Centroide medido, en píxeles de la rejilla",
+          "type": "number"
+        },
+        "y": {
+          "description": "Centroide medido, en píxeles de la rejilla",
+          "type": "number"
+        },
+        "snr": {
+          "description": "Relación señal/ruido de la medición",
+          "type": "number"
+        },
+        "distancia_px": {
+          "description": "Distancia a la posición esperada",
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "epoca_id",
+        "x",
+        "y",
+        "snr",
+        "distancia_px"
+      ],
+      "title": "DeteccionDeConocido",
       "type": "object"
     },
     "Epoca": {
@@ -383,6 +444,32 @@
       "title": "FuenteDeEpoca",
       "type": "object"
     },
+    "Geometria": {
+      "additionalProperties": false,
+      "description": "Dónde estaban la Tierra y el objeto cuando se tomó cada época (JPL Horizons).\n\nLa escena 3D dibuja exactamente esta geometría, la misma que usó el\npipeline para marcar al objeto, en vez de recalcularla en el navegador.",
+      "properties": {
+        "marco": {
+          "const": "heliocentrico-ecliptico-J2000",
+          "type": "string"
+        },
+        "tierra": {
+          "items": {
+            "$ref": "#/$defs/PuntoHeliocentrico"
+          },
+          "type": "array"
+        },
+        "objeto": {
+          "$ref": "#/$defs/ObjetoEnLaEscena"
+        }
+      },
+      "required": [
+        "marco",
+        "tierra",
+        "objeto"
+      ],
+      "title": "Geometria",
+      "type": "object"
+    },
     "Identificacion": {
       "additionalProperties": false,
       "properties": {
@@ -510,7 +597,7 @@
             "asteroide",
             "cometa",
             "tno",
-            "planeta",
+            "planeta-enano",
             "enana-marron"
           ],
           "type": "string"
@@ -521,11 +608,19 @@
           },
           "type": "array"
         },
+        "deteccion": {
+          "description": "Mediciones en la imagen; vacía si no se midió",
+          "items": {
+            "$ref": "#/$defs/DeteccionDeConocido"
+          },
+          "type": "array"
+        },
         "fuente": {
           "enum": [
             "SkyBoT",
             "Horizons",
-            "SIMBAD"
+            "SIMBAD",
+            "Gaia DR3"
           ],
           "type": "string"
         },
@@ -548,11 +643,34 @@
         "nombre",
         "tipo",
         "posiciones",
+        "deteccion",
         "fuente",
         "consultado_en",
         "magnitud"
       ],
       "title": "ObjetoConocido",
+      "type": "object"
+    },
+    "ObjetoEnLaEscena": {
+      "additionalProperties": false,
+      "description": "El cuerpo del Sistema Solar del campo, con su posición en cada época.",
+      "properties": {
+        "nombre": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "posiciones": {
+          "items": {
+            "$ref": "#/$defs/PuntoHeliocentrico"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "nombre",
+        "posiciones"
+      ],
+      "title": "ObjetoEnLaEscena",
       "type": "object"
     },
     "PedidoDeTrabajo": {
@@ -672,6 +790,18 @@
         },
         "dentro_del_campo": {
           "type": "boolean"
+        },
+        "distancia_ua": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Distancia al observador en UA; null para las estrellas"
         }
       },
       "required": [
@@ -680,9 +810,31 @@
         "dec",
         "x",
         "y",
-        "dentro_del_campo"
+        "dentro_del_campo",
+        "distancia_ua"
       ],
       "title": "PosicionEsperada",
+      "type": "object"
+    },
+    "Procedencia": {
+      "additionalProperties": false,
+      "description": "Con qué versión del pipeline y cuándo se consultó IRSA (RNF-12).",
+      "properties": {
+        "version_pipeline": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "irsa_consultado_en": {
+          "description": "Cuándo se buscaron las observaciones",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version_pipeline",
+        "irsa_consultado_en"
+      ],
+      "title": "Procedencia",
       "type": "object"
     },
     "Profundidad": {
@@ -729,6 +881,34 @@
         "fraccion_recuperada"
       ],
       "title": "PuntoDeRecuperacion",
+      "type": "object"
+    },
+    "PuntoHeliocentrico": {
+      "additionalProperties": false,
+      "description": "Posición de un cuerpo en una época, centrada en el Sol (RF-34, RF-35).",
+      "properties": {
+        "epoca_id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "x_ua": {
+          "type": "number"
+        },
+        "y_ua": {
+          "type": "number"
+        },
+        "z_ua": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "epoca_id",
+        "x_ua",
+        "y_ua",
+        "z_ua"
+      ],
+      "title": "PuntoHeliocentrico",
       "type": "object"
     },
     "Rejilla": {
