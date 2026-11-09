@@ -52,8 +52,14 @@ muestra en el pie de todas las páginas (`web/src/layout/reconocimientos.ts`).
   has been provided by national institutions, in particular the institutions
   participating in the Gaia Multilateral Agreement.»
 
-Los términos para redistribuir recortes procesados de IRSA se citan acá con su
-enlace antes de publicar los campos de la demo en producción (TAR-07).
+### Términos de uso
+
+Según los [términos de uso de IRSA](https://irsa.ipac.caltech.edu/data_use_terms.html)
+(consultados el 2026-11-08), la mayoría de los datos de IRSA son públicos y no
+tienen restricciones de uso; lo que se pide es el reconocimiento y la cita que
+indica [Acknowledging IRSA](https://irsa.ipac.caltech.edu/ack.html). Por eso
+los recortes procesados de `web/public/datos/` se publican con los
+reconocimientos de arriba, que el sitio muestra en su pie.
 
 ## Código de terceros
 

@@ -1222,8 +1222,8 @@
       "en": "Estrella de Barnard saturates the detector: its core is masked and its position is not measured; the marker is the catalogue position."
     },
     {
-      "es": "Entre la primera y la última época la estrella se corre 1,7 px (10,6″): SPHEREx todavía no tiene imágenes de este punto separadas más de un año.",
-      "en": "Between the first and last epochs the star moves 1.7 px (10.6″): SPHEREx does not yet have images of this spot more than a year apart."
+      "es": "Entre la primera y la última época la estrella se corre 1,7 px (10,6″): las épocas disponibles en IRSA para este punto y este detector cubren un año.",
+      "en": "Between the first and last epochs the star moves 1.7 px (10.6″): the epochs available at IRSA for this spot and detector span one year."
     }
   ],
   "creditos": "Imágenes: SPHEREx (NASA/JPL-Caltech), NASA/IPAC Infrared Science Archive (IRSA). Estrellas: base de datos SIMBAD, CDS, Estrasburgo; Gaia DR3 (ESA/DPAC), servido por IRSA. Efemérides: NASA/JPL Horizons (Giorgini y Solar System Dynamics Group).",

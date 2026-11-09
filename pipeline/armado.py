@@ -403,11 +403,11 @@ def armar_campo(definicion: DefinicionDeCampo, contexto: Contexto) -> CampoGener
                 _aviso(
                     f"Entre la primera y la última época la estrella se corre "
                     f"{_es(corrimiento)} px "
-                    f"({_es(corrimiento * rejilla.escala_arcsec)}″): SPHEREx todavía no tiene "
-                    "imágenes de este punto separadas más de un año.",
+                    f"({_es(corrimiento * rejilla.escala_arcsec)}″): las épocas disponibles "
+                    "en IRSA para este punto y este detector cubren un año.",
                     f"Between the first and last epochs the star moves {corrimiento:.1f} px "
-                    f"({corrimiento * rejilla.escala_arcsec:.1f}″): SPHEREx does not yet have "
-                    "images of this spot more than a year apart.",
+                    f"({corrimiento * rejilla.escala_arcsec:.1f}″): the epochs available at "
+                    "IRSA for this spot and detector span one year.",
                 )
             )
     if isinstance(destacado, CuerpoDestacado) and efemerides is not None:

@@ -16,8 +16,9 @@
  * - SIMBAD: documentación de CDS (https://cdsxmatch.cds.unistra.fr/xmatch/doc/simbad-ack.html).
  * - Gaia: créditos de ESA (https://www.cosmos.esa.int/web/gaia-users/credits).
  *
- * TAR-07 revisa los términos de redistribución de cada fuente antes de
- * publicar los campos; si cambia algún texto, se cambia acá y en CREDITS.md.
+ * Los términos de uso de IRSA (https://irsa.ipac.caltech.edu/data_use_terms.html)
+ * no restringen el uso de los datos públicos y piden estos reconocimientos
+ * (TAR-07). Si cambia algún texto, se cambia acá y en CREDITS.md.
  */
 export interface Reconocimiento {
   fuente: string
@@ -30,7 +31,12 @@ export const reconocimientos: readonly Reconocimiento[] = [
     fuente: 'SPHEREx',
     enlace: 'https://irsa.ipac.caltech.edu/Missions/spherex.html',
     texto:
-      'This publication makes use of data products from the Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the National Aeronautics and Space Administration. Quick Releases QR2 (doi:10.26131/IRSA652) and QR3 (doi:10.26131/IRSA662).',
+      'This publication makes use of data products from the Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the California Institute of Technology, and is funded by the National Aeronautics and Space Administration.',
+  },
+  {
+    fuente: 'SPHEREx Quick Releases',
+    enlace: 'https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_qr.html',
+    texto: 'QR2: doi:10.26131/IRSA652. QR3: doi:10.26131/IRSA662.',
   },
   {
     fuente: 'IRSA',
