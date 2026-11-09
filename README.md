@@ -14,19 +14,21 @@ trabaja.
 
 ## Qué está hecho y qué es objetivo
 
-El repo tiene hoy el esqueleto (hito **H1**): el contrato de datos completo,
-`core` con la versión y la salud del servicio, `pipeline` con la escritura de
-documentos, `api` con `GET /salud`, la web con la página inicial y el pie de
-reconocimientos, y la verificación continua. El resto de la arquitectura es el
-**objetivo** de los hitos H2 a H5 y sale del plan del proyecto y de la
-especificación de requisitos.
+El repo tiene hoy los datos reales (hito **H2**) sobre el esqueleto de H1: el
+contrato de datos completo, `core` con todas las etapas que bajan y procesan
+las imágenes de SPHEREx, `pipeline` con los dos campos de la demo (la Estrella
+de Barnard y Makemake) ya generados en `web/public/datos/`, `api` con
+`GET /salud`, la web con la página inicial y el pie de reconocimientos, y la
+verificación continua. El visor, la escena 3D, la búsqueda de objetos y el
+modo en vivo son el **objetivo** de los hitos H3 a H5 y salen del plan del
+proyecto y de la especificación de requisitos.
 
 Los diagramas usan la misma leyenda:
 
 ```mermaid
 flowchart LR
-    H["Implementado (H1)"]:::hecho
-    O["Objetivo (H2 en adelante)"]:::objetivo
+    H["Implementado (H1 y H2)"]:::hecho
+    O["Objetivo (H3 en adelante)"]:::objetivo
     E[("Sistema externo")]:::externo
 
     classDef hecho fill:#d8f3dc,stroke:#2d6a4f,color:#1b4332
@@ -42,8 +44,8 @@ gris rotulado con su hito.
 | Módulo | Responsabilidad | Stack | Estado |
 |---|---|---|---|
 | `contrato/` | Forma de los datos: única fuente de verdad para pipeline, API y web | Python 3.12, Pydantic → JSON Schema → json-schema-to-typescript | Completo |
-| `core/` | Toda la lógica que toca datos: consultas a IRSA, máscaras, rejilla común, diferencias, objetos conocidos, búsqueda | Python 3.12, astropy, photutils, reproject, numpy, scipy, pyvo, httpx | Versión y salud; el resto desde H2 |
-| `pipeline/` | Orquesta `core` offline y deja los campos de la demo como archivos estáticos | Python 3.12 | Escritura de documentos; el resto desde H2 |
+| `core/` | Toda la lógica que toca datos: consultas a IRSA, máscaras, rejilla común, diferencias, objetos conocidos, búsqueda | Python 3.12, astropy, photutils, reproject, numpy, scipy, Pillow, httpx2 | Etapas de datos (H2); la búsqueda en H4 |
+| `pipeline/` | Orquesta `core` offline y deja los campos de la demo como archivos estáticos | Python 3.12 | Completo para Barnard y Makemake |
 | `api/` | Modo en vivo: rutas HTTP que delegan en `core`, con caché en disco | FastAPI, Uvicorn | `GET /salud`; el resto en H4 |
 | `web/` | Visor: parpadeo, diferencia, objetos conocidos, candidatos, página de límites | React, Vite, TypeScript, CSS con tokens, canvas, Aladin Lite v3 | Página inicial y pie; el visor en H3 |
 
@@ -53,10 +55,10 @@ gris rotulado con su hito.
 
 Quién usa spherex-blink y con qué sistemas externos habla. Todos los datos
 científicos salen de servicios públicos: IRSA para las imágenes de SPHEREx y
-los catálogos de IMCCE, JPL y CDS para los objetos conocidos. El visitante sólo
-habla con la web; la demo no necesita ninguno de los externos porque los campos
-ya vienen precalculados. Del pipeline ya existe la escritura de documentos; las
-etapas que bajan y procesan los datos llegan en H2.
+para Gaia DR3, y los catálogos de JPL y CDS para los objetos conocidos (SkyBoT,
+de IMCCE, llega con la búsqueda en H4). El visitante sólo habla con la web; la
+demo no necesita ninguno de los externos porque los campos ya vienen
+precalculados en `web/public/datos/`.
 
 ```mermaid
 flowchart TB
@@ -66,12 +68,12 @@ flowchart TB
         web["Web estática<br/>visor y campos precalculados"]:::hecho
         api["API del modo en vivo"]:::objetivo
         subgraph pipeline["Pipeline offline"]
-            etapas["Etapas de datos<br/>descarga, máscara, rejilla, diferencias"]:::objetivo
+            etapas["Etapas de datos<br/>descarga, máscara, rejilla, diferencias"]:::hecho
             escritura["Escritura de documentos<br/>validados contra el contrato"]:::hecho
         end
     end
 
-    tap[("IRSA TAP<br/>spherex.plane + spherex.artifact")]:::externo
+    tap[("IRSA TAP<br/>spherex.plane + spherex.artifact<br/>gaia_dr3_source")]:::externo
     recortes[("IRSA servicio de recortes<br/>imágenes L2 MEF")]:::externo
     s3[("Bucket S3 público<br/>nasa-irsa-spherex")]:::externo
     skybot[("SkyBoT · IMCCE")]:::externo
@@ -84,13 +86,12 @@ flowchart TB
     web -. "contexto visual" .-> aladin
     etapas --> tap
     etapas --> recortes
-    etapas -. "lecturas por rangos" .-> s3
-    etapas --> skybot
+    api -. "lecturas por rangos" .-> s3
+    api -.-> skybot
     etapas --> jpl
     etapas --> simbad
-    api --> tap
-    api --> recortes
-    api --> skybot
+    api -.-> tap
+    api -.-> recortes
     etapas --> escritura
     escritura -- "JSON + WebP" --> web
 
@@ -103,10 +104,9 @@ flowchart TB
 
 Las flechas apuntan hacia lo que cada paquete importa. `contrato` no depende
 de nada del proyecto; `core` sólo de `contrato`; `pipeline` y `api` son dos
-puertas distintas al mismo `core` y no se importan entre sí. Hoy `api` ya
-importa `core`; `pipeline` sólo importa `contrato` hasta que lleguen las etapas
-de datos en H2. La web no importa Python: compila contra los tipos generados y
-lee el JSON que deja el pipeline o que devuelve la API.
+puertas distintas al mismo `core` y no se importan entre sí. La web no importa
+Python: compila contra los tipos generados y lee el JSON que deja el pipeline
+o que devuelve la API.
 
 ```mermaid
 flowchart BT
@@ -115,11 +115,11 @@ flowchart BT
     pipeline["pipeline<br/>orquestación offline"]:::hecho
     api["api<br/>FastAPI"]:::hecho
     tipos["web/src/api/tipos.ts<br/>generado"]:::hecho
-    datos["web/public/datos/<br/>indice.json · campo.json · WebP"]:::objetivo
+    datos["web/public/datos/<br/>indice.json · campo.json · WebP"]:::hecho
     web["web<br/>React + Vite + TS"]:::hecho
 
     core --> contrato
-    pipeline -. "objetivo (H2)" .-> core
+    pipeline --> core
     pipeline --> contrato
     api --> core
     api --> contrato
@@ -129,7 +129,6 @@ flowchart BT
     web -- "lee" --> datos
     web -. "HTTP, modo en vivo" .-> api
 
-    linkStyle 1 stroke:#868e96,stroke-dasharray:5 3
     classDef hecho fill:#d8f3dc,stroke:#2d6a4f,color:#1b4332
     classDef objetivo fill:#f1f3f5,stroke:#868e96,stroke-dasharray:5 3,color:#495057
 ```
@@ -144,43 +143,67 @@ flowchart BT
 
 ### 3. Pipeline por etapas
 
-Lo que hace `pipeline` con cada campo de la demo, en orden. Cada etapa es una
-función de `core`, así la API reutiliza las mismas etapas para un campo en
-vivo. La búsqueda de objetos que se mueven va aparte porque llega en H4 y la
-demo funciona sin ella: hasta entonces `candidatos` queda vacío. Las fallas no
-cortan el campo: terminan en `avisos[]`.
+Lo que hace `pipeline` con cada campo de la demo, en orden. Cada etapa es un
+módulo de `core` (entre paréntesis), así la API podrá reutilizar las mismas
+etapas para un campo en vivo. La búsqueda de objetos que se mueven va aparte
+porque llega en H4 y la demo funciona sin ella: hasta entonces `candidatos`
+queda vacío. Las fallas no cortan el campo: terminan en `avisos[]`.
 
 ```mermaid
 flowchart TB
-    entrada["Campo: centro, tamaño y detector"]:::objetivo
-    descubrir["1 · Descubrir observaciones<br/>consulta TAP, ordenadas por mjd"]:::objetivo
-    bajar["2 · Bajar recortes<br/>paralelo acotado, reintentos, caché en disco"]:::objetivo
-    mascara["3 · Máscara de FLAGS<br/>sólo los bits malos"]:::objetivo
-    rejilla["4 · Reproyección a rejilla común<br/>norte arriba, igual en todas las épocas"]:::objetivo
-    estirar["5 · Estirar con escala común<br/>y exportar a WebP"]:::objetivo
-    diferencia["6 · Referencia y diferencia<br/>mediana de las otras épocas"]:::objetivo
-    conocidos["7 · Posiciones de conocidos por época<br/>SkyBoT, Horizons, SIMBAD"]:::objetivo
+    entrada["Campo: objeto destacado, tamaño, detector y fechas<br/>(pipeline/campos.py)"]:::hecho
+    destacado["0 · Dónde está el objeto<br/>SIMBAD o JPL Horizons (estrellas, efemerides)"]:::hecho
+    descubrir["1 · Descubrir observaciones<br/>TAP de IRSA, ordenadas por mjd (observaciones)"]:::hecho
+    elegir["2 · Una época por visita, repartidas por pasada (epocas)"]:::hecho
+    bajar["3 · Bajar recortes<br/>paralelo acotado, reintentos, caché en disco (recortes)"]:::hecho
+    mascara["4 · Máscara de FLAGS<br/>sólo los bits malos (mascara)"]:::hecho
+    rejilla["5 · Reproyección a rejilla común<br/>norte arriba, igual en todas las épocas (rejilla)"]:::hecho
+    estirar["6 · Fondo restado, escala asinh común<br/>y WebP (estiramiento)"]:::hecho
+    diferencia["7 · Referencia y diferencia<br/>mediana de las otras épocas (diferencias)"]:::hecho
+    conocidos["8 · Conocidos por época y su medición<br/>SIMBAD, Horizons, Gaia DR3 (estrellas, efemerides, gaia, medicion)"]:::hecho
 
     subgraph busqueda["Búsqueda de objetos que se mueven (H4)"]
-        detectar["8 · Detección en las diferencias<br/>más de 5σ"]:::objetivo
-        enlazar["9 · Enlace en candidatos<br/>3 o más épocas, movimiento uniforme"]:::objetivo
-        alarmas["10 · Falsas alarmas esperadas"]:::objetivo
-        cruce["11 · Cruce con conocidos"]:::objetivo
+        detectar["9 · Detección en las diferencias<br/>más de 5σ"]:::objetivo
+        enlazar["10 · Enlace en candidatos<br/>3 o más épocas, movimiento uniforme"]:::objetivo
+        alarmas["11 · Falsas alarmas esperadas"]:::objetivo
+        cruce["12 · Cruce con conocidos"]:::objetivo
     end
 
-    escribir["12 · Escribir indice.json y campo.json<br/>validados contra el contrato"]:::hecho
-    avisos[["avisos: épocas descartadas,<br/>saturación, cambio de longitud de onda"]]:::objetivo
+    escribir["13 · Escribir indice.json y campo.json<br/>validados contra el contrato (pipeline/escritura.py)"]:::hecho
+    avisos[["avisos: épocas descartadas, saturación,<br/>cambio de longitud de onda, detecciones flojas"]]:::hecho
 
-    entrada --> descubrir --> bajar --> mascara --> rejilla --> estirar --> diferencia --> conocidos
-    conocidos --> detectar --> enlazar --> alarmas --> cruce --> escribir
-    conocidos -. "sin búsqueda: candidatos vacío" .-> escribir
+    entrada --> destacado --> descubrir --> elegir --> bajar --> mascara --> rejilla --> estirar --> diferencia --> conocidos
+    conocidos -. "H4" .-> detectar --> enlazar --> alarmas --> cruce -.-> escribir
+    conocidos -- "candidatos vacío" --> escribir
     bajar -. "fallas aisladas" .-> avisos
     diferencia -. "menos de 3 épocas" .-> avisos
+    conocidos -. "lo que no cumple" .-> avisos
     avisos --> escribir
 
     classDef hecho fill:#d8f3dc,stroke:#2d6a4f,color:#1b4332
     classDef objetivo fill:#f1f3f5,stroke:#868e96,stroke-dasharray:5 3,color:#495057
 ```
+
+Decisiones que hay adentro de las etapas:
+
+- **Épocas.** Dentro de una visita SPHEREx toma varias exposiciones seguidas,
+  a 2 minutos; se usa una por visita. La pasada (1 a 4) sale de la fecha:
+  pasadas de medio año desde el 2025-05-01.
+- **Recortes.** Se piden 1,5 veces más grandes que el campo, porque llegan en
+  la orientación nativa de la exposición y la rejilla norte arriba no puede
+  quedar con las esquinas vacías. La caché guarda sólo IMAGE, FLAGS, VARIANCE
+  y WCS-WAVE (la PSF es el 95 % del archivo y no se usa).
+- **Rejilla.** TAN con el píxel nativo de 6,15″. Los píxeles malos se rellenan
+  con sus vecinos antes de interpolar (bilineal) y la máscara viaja aparte con
+  vecino más cercano, para que un píxel malo no se agrande a cuatro.
+- **WebP.** Sin pérdida, gris con alfa: los píxeles inválidos van con alfa 0 y
+  el visor les pone su color de «sin dato». La diferencia es lineal y
+  simétrica, con el gris 128 como «sin cambio».
+- **Mediciones.** Fotometría de apertura (1,5 px) con fondo y ruido de un
+  anillo con recorte sigma. Makemake se mide en la diferencia, donde las
+  estrellas fijas se cancelan; la alineación (RF-04) se controla midiendo
+  estrellas fijas de Gaia DR3 en cada época, salvo donde tienen píxeles
+  enmascarados encima.
 
 ### 4. Secuencia de un campo en vivo
 
@@ -310,13 +333,34 @@ classDiagram
         rejilla: Rejilla
         estiramiento: Estiramiento
         epocas: list~Epoca~
-        referencia: str
+        referencia: str o None
         rastro: str o None
         conocidos: list~ObjetoConocido~
         candidatos: list~Candidato~
+        geometria: Geometria o None
         limites: Limites o None
         avisos: list~TextoTraducido~
         creditos: str
+        procedencia: Procedencia
+    }
+    class Geometria {
+        marco: heliocentrico-ecliptico-J2000
+        tierra: list~PuntoHeliocentrico~
+        objeto: ObjetoEnLaEscena
+    }
+    class ObjetoEnLaEscena {
+        nombre: str
+        posiciones: list~PuntoHeliocentrico~
+    }
+    class PuntoHeliocentrico {
+        epoca_id: str
+        x_ua: float
+        y_ua: float
+        z_ua: float
+    }
+    class Procedencia {
+        version_pipeline: str
+        irsa_consultado_en: datetime
     }
     class TextoTraducido {
         es: str
@@ -357,6 +401,7 @@ classDiagram
         nombre: str
         tipo: TipoDeObjetoConocido
         posiciones: list~PosicionEsperada~
+        deteccion: list~DeteccionDeConocido~
         fuente: FuenteDeCatalogo
         consultado_en: datetime
         magnitud: Magnitud o None
@@ -368,6 +413,14 @@ classDiagram
         x: float
         y: float
         dentro_del_campo: bool
+        distancia_ua: float o None
+    }
+    class DeteccionDeConocido {
+        epoca_id: str
+        x: float
+        y: float
+        snr: float
+        distancia_px: float
     }
     class Magnitud {
         valor: float
@@ -453,6 +506,12 @@ classDiagram
     Epoca *-- FuenteDeEpoca
     ObjetoConocido *-- PosicionEsperada
     ObjetoConocido *-- Magnitud
+    ObjetoConocido *-- DeteccionDeConocido
+    Campo *-- Geometria
+    Campo *-- Procedencia
+    Geometria *-- PuntoHeliocentrico
+    Geometria *-- ObjetoEnLaEscena
+    ObjetoEnLaEscena *-- PuntoHeliocentrico
     Candidato *-- Deteccion
     Candidato *-- Identificacion
     Limites *-- Profundidad
@@ -461,17 +520,25 @@ classDiagram
     Trabajo o-- Campo
     PosicionEsperada ..> Epoca : epoca_id
     Deteccion ..> Epoca : epoca_id
+    DeteccionDeConocido ..> Epoca : epoca_id
+    PuntoHeliocentrico ..> Epoca : epoca_id
 ```
 
 Los tipos cerrados son literales: `Detector` va de `D1` a `D6`;
 `TipoDeEstiramiento` es `lineal` o `asinh`; `TipoDeObjetoConocido` es
-`estrella`, `asteroide`, `cometa`, `tno`, `planeta` o `enana-marron`;
-`FuenteDeCatalogo` es `SkyBoT`, `Horizons` o `SIMBAD`; `EstadoDeIdentificacion`
+`estrella`, `asteroide`, `cometa`, `tno`, `planeta-enano` o `enana-marron`;
+`FuenteDeCatalogo` es `SkyBoT`, `Horizons`, `SIMBAD` o `Gaia DR3`; `EstadoDeIdentificacion`
 es `conocido` o `sin-identificar`; `EstadoDeTrabajo` es `pendiente`,
 `en-curso`, `parcial`, `listo` o `error`. `PedidoDeTrabajo` es
 `PedidoPorCoordenadas` o `PedidoPorNombre`. Además de lo que dice el schema,
 `Campo` valida que las épocas estén ordenadas por `mjd`, que sus `id` no se
-repitan y que toda `epoca_id` citada exista.
+repitan y que toda `epoca_id` citada (posiciones, detecciones, candidatos y
+geometría) exista.
+
+Convenciones de los valores: coordenadas en grados ICRS; posiciones en
+píxeles de la rejilla con el origen en el centro del píxel de arriba a la
+izquierda, `x` hacia la derecha e `y` hacia abajo; `estiramiento` en MJy/sr
+con el fondo mediano de cada época ya restado; fechas en UTC.
 
 ### 7. Despliegue
 
@@ -544,7 +611,7 @@ flowchart LR
     ci{"CI: ¿coincide con lo versionado?"}:::hecho
     ok["Verde"]:::hecho
     falla["Rojo: regenerar y commitear"]:::hecho
-    archivos["JSON del pipeline"]:::objetivo
+    archivos["JSON del pipeline"]:::hecho
     respuestas["Respuestas de la API"]:::objetivo
     web["Compilación de la web"]:::hecho
 
@@ -553,7 +620,7 @@ flowchart LR
     tipos --> ci
     ci -- "sí" --> ok
     ci -- "no" --> falla
-    schema -. "valida" .-> archivos
+    schema -- "valida (tests/datos)" --> archivos
     modelos -. "valida" .-> respuestas
     tipos -- "tsc" --> web
 
@@ -599,11 +666,29 @@ spherex-blink/
 │   ├── esquemas/        JSON Schema generados (versionados)
 │   └── ejemplos/        indice.json y campo.json hechos a mano para las pruebas
 ├── core/                Lógica que comparten el pipeline y la API
+│   ├── configuracion.py Servicios, caché y límites de red, desde variables de entorno
+│   ├── red.py · cache.py · tap.py    HTTP con reintentos, caché en disco, consultas ADQL
+│   ├── observaciones.py · epocas.py  RF-01: imágenes de un campo, pasadas y visitas
+│   ├── recortes.py      RF-02: recortes en paralelo acotado, con caché y estado parcial
+│   ├── mascara.py       RF-03: bits malos de FLAGS
+│   ├── rejilla.py       RF-04: rejilla norte arriba y reproyección
+│   ├── estiramiento.py  RF-05: escala común y WebP
+│   ├── diferencias.py   RF-06: mediana y diferencia
+│   ├── estrellas.py · catalogo.py · gaia.py   RF-08: estrellas de SIMBAD y Gaia DR3
+│   ├── efemerides.py    RF-32: efemérides y vectores de JPL Horizons
+│   └── medicion.py      Centroide y S/N de una fuente
 ├── pipeline/            Proceso offline que genera los campos de la demo
+│   ├── __main__.py      python -m pipeline: regenera todo
+│   ├── campos.py        Los campos de la demo (TAR-06)
+│   ├── armado.py        Un campo de punta a punta
+│   └── escritura.py     JSON validado contra el contrato
 ├── api/                 FastAPI: rutas HTTP que delegan en core/
 │   └── rutas/           Un router por área
 ├── tests/               pytest, con una carpeta por paquete
+│   ├── datos/           Comprueba los campos versionados contra el contrato y el SRS
+│   └── fixture/         FITS sintéticos y respuestas grabadas de IRSA, SIMBAD y Horizons
 ├── web/                 React + Vite + TypeScript
+│   ├── public/datos/    Campos de la demo generados por el pipeline (JSON + WebP, versionados)
 │   ├── src/             Código de la aplicación (taxonomía abajo)
 │   ├── e2e/             Pruebas en navegador con Playwright
 │   ├── scripts/         generar-tipos.mjs (JSON Schema → TypeScript)
@@ -629,8 +714,14 @@ Todo lo propio se nombra en español (`escribir_documento`, `rutaDeDatos`,
 | `pipeline` | Orquestación offline y escritura de archivos | `core`, `contrato` |
 | `api` | Rutas HTTP, sin lógica | `core`, `contrato` |
 
-Los tests espejan los paquetes en `tests/<paquete>/`. Los que pegan a servicios
-reales llevan `@pytest.mark.red` y quedan fuera de la corrida por defecto.
+Los tests espejan los paquetes en `tests/<paquete>/`, más `tests/datos/`, que
+revisa los campos ya generados. Los que pegan a servicios reales llevan
+`@pytest.mark.red` y quedan fuera de la corrida por defecto.
+
+Los campos generados viven en `web/public/datos/` con un nombre por función:
+`indice.json`, y por campo `campos/<id>/campo.json`, `<época>.webp`,
+`<época>-diferencia.webp`, `referencia.webp` y `miniatura.webp`. Las épocas se
+llaman `p<pasada>-<AAAAMMDD>-<HHMMSS>` (UTC), así ordenan solas por fecha.
 
 **Web** (`web/src/`):
 
@@ -683,6 +774,30 @@ npm run build                      # deja la build en web/dist/
 npm run test:e2e                   # Playwright contra la build servida
 ```
 
+### Pipeline de datos
+
+Regenera todos los campos de la demo en `web/public/datos/` desde cero:
+
+```bash
+python -m pipeline                  # todos los campos
+python -m pipeline --campo makemake # uno solo; el índice se rearma con los demás
+```
+
+La primera corrida baja de IRSA, SIMBAD y JPL Horizons (unos minutos: cada
+recorte tarda 10 a 15 s) y deja todo en `cache/`, que git ignora. Con la caché
+llena no sale a la red y da los mismos archivos salvo `generado_en` del índice.
+Para empezar de cero se borra `cache/`. Los campos generados se versionan; los
+FITS y la caché, nunca.
+
+| Variable | Default | Para qué |
+|---|---|---|
+| `SPHEREX_BLINK_CACHE` | `cache` | Carpeta de la caché |
+| `SPHEREX_BLINK_PEDIDOS_SIMULTANEOS` | `8` | Pedidos en paralelo a IRSA (tope 12) |
+| `SPHEREX_BLINK_REINTENTOS` | `3` | Reintentos ante timeout, 503 o conexión cortada |
+| `SPHEREX_BLINK_TIMEOUT_S` | `120` | Timeout de cada pedido |
+| `IRSA_TAP_URL`, `IRSA_URL_BASE`, `HORIZONS_URL` | servicios públicos | Otro servidor, si cambia |
+| `SIMBAD_TAP_URLS` | CDS y el espejo de Harvard | Servidores de SIMBAD en orden, separados por coma |
+
 ### Contrato
 
 Después de cambiar un modelo de `contrato/`, desde la raíz y con el entorno de
@@ -701,7 +816,7 @@ cada push a esas ramas, con tres trabajos:
 
 | Trabajo | Qué verifica |
 |---|---|
-| Python | ruff (lint y formato), mypy estricto y pytest |
+| Python | ruff (lint y formato), mypy estricto y pytest, incluidos los campos de `web/public/datos/` contra el schema |
 | Contrato | Que los schemas y `tipos.ts` versionados coinciden con los modelos |
 | Web | ESLint, `tsc`, Vitest, build y Playwright |
 
