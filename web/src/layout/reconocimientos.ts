@@ -66,4 +66,12 @@ export const reconocimientos: readonly Reconocimiento[] = [
     texto:
       'This work has made use of data from the European Space Agency (ESA) mission Gaia (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.',
   },
+  {
+    // Atribución que pide la CC BY 4.0 de las texturas de la escena 3D
+    // (RNF-13); la de Makemake es inventada y la escena lo dice.
+    fuente: 'Solar System Scope',
+    enlace: 'https://www.solarsystemscope.com/textures/',
+    texto:
+      'Sun, planet, ring and star textures by Solar System Scope, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), converted to WebP. The Makemake texture is fictional.',
+  },
 ]
