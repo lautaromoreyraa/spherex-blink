@@ -14,21 +14,23 @@ trabaja.
 
 ## Qué está hecho y qué es objetivo
 
-El repo tiene hoy los datos reales (hito **H2**) sobre el esqueleto de H1: el
-contrato de datos completo, `core` con todas las etapas que bajan y procesan
-las imágenes de SPHEREx, `pipeline` con los dos campos de la demo (la Estrella
-de Barnard y Makemake) ya generados en `web/public/datos/`, `api` con
-`GET /salud`, la web con la página inicial y el pie de reconocimientos, y la
-verificación continua. El visor, la escena 3D, la búsqueda de objetos y el
-modo en vivo son el **objetivo** de los hitos H3 a H5 y salen del plan del
-proyecto y de la especificación de requisitos.
+El repo tiene hoy el visor (hito **H3**) sobre los datos reales de H2 y el
+esqueleto de H1: el contrato de datos completo, `core` con todas las etapas
+que bajan y procesan las imágenes de SPHEREx, `pipeline` con los dos campos de
+la demo (la Estrella de Barnard y Makemake) ya generados en
+`web/public/datos/`, `api` con `GET /salud`, la web con la lista de campos, el
+visor en WebGL (parpadeo, diferencia, apilado, rastro, comparación de dos
+fechas, objetos conocidos, procedencia, zoom y coordenadas), la página «Qué
+puede y qué no», español e inglés, y la verificación continua. La escena 3D,
+la búsqueda de objetos y el modo en vivo son el **objetivo** de los hitos H4 y
+H5 y salen del plan del proyecto y de la especificación de requisitos.
 
 Los diagramas usan la misma leyenda:
 
 ```mermaid
 flowchart LR
-    H["Implementado (H1 y H2)"]:::hecho
-    O["Objetivo (H3 en adelante)"]:::objetivo
+    H["Implementado (H1 a H3)"]:::hecho
+    O["Objetivo (H4 en adelante)"]:::objetivo
     E[("Sistema externo")]:::externo
 
     classDef hecho fill:#d8f3dc,stroke:#2d6a4f,color:#1b4332
@@ -47,7 +49,7 @@ gris rotulado con su hito.
 | `core/` | Toda la lógica que toca datos: consultas a IRSA, máscaras, rejilla común, diferencias, objetos conocidos, búsqueda | Python 3.12, astropy, photutils, reproject, numpy, scipy, Pillow, httpx2 | Etapas de datos (H2); la búsqueda en H4 |
 | `pipeline/` | Orquesta `core` offline y deja los campos de la demo como archivos estáticos | Python 3.12 | Completo para Barnard y Makemake |
 | `api/` | Modo en vivo: rutas HTTP que delegan en `core`, con caché en disco | FastAPI, Uvicorn | `GET /salud`; el resto en H4 |
-| `web/` | Visor: parpadeo, diferencia, objetos conocidos, candidatos, página de límites | React, Vite, TypeScript, CSS con tokens, canvas, Aladin Lite v3 | Página inicial y pie; el visor en H3 |
+| `web/` | Visor: parpadeo, diferencia, objetos conocidos, candidatos, página de límites | React, Vite, TypeScript, WebGL 2 con shaders propios (canvas 2D si no hay WebGL), CSS con tokens, Aladin Lite v3 | Lista de campos, visor y página de límites (H3); candidatos, escena 3D y Aladin Lite en H4 y H5 |
 
 ## Arquitectura
 
@@ -197,8 +199,11 @@ Decisiones que hay adentro de las etapas:
   con sus vecinos antes de interpolar (bilineal) y la máscara viaja aparte con
   vecino más cercano, para que un píxel malo no se agrande a cuatro.
 - **WebP.** Sin pérdida, gris con alfa: los píxeles inválidos van con alfa 0 y
-  el visor les pone su color de «sin dato». La diferencia es lineal y
-  simétrica, con el gris 128 como «sin cambio».
+  el visor les pone su color de «sin dato». Las épocas, la mediana y el rastro
+  (máximo por píxel) van con el mismo asinh, cuyos tres números (`minimo`,
+  `maximo`, `parametro_asinh`) están en `campo.json`; la diferencia es lineal
+  y simétrica, con el gris 128 como «sin cambio» y su límite en
+  `escala_diferencia`. Con eso el visor vuelve cada gris a MJy/sr.
 - **Mediciones.** Fotometría de apertura (1,5 px) con fondo y ruido de un
   anillo con recorte sigma. Makemake se mide en la diferencia, donde las
   estrellas fijas se cancelan; la alineación (RF-04) se controla midiendo
@@ -279,22 +284,44 @@ sequenceDiagram
     participant E as Archivos estáticos en datos/
 
     U->>W: Abre el sitio
-    rect rgb(241, 243, 245)
-        Note over W,E: Objetivo (H3)
-        W->>E: GET datos/indice.json
-        E-->>W: Lista de campos con miniaturas
-        U->>W: Elige un campo
-        W->>E: GET datos/campos/id/campo.json
-        E-->>W: Épocas, conocidos, candidatos y avisos
-        par Imagen de cada época
-            W->>E: GET imagen WebP
-        and Diferencia de cada época
-            W->>E: GET diferencia WebP
-        end
-        E-->>W: WebP
-        W-->>U: Parpadeo, diferencia y marcas de conocidos
+    W->>E: GET datos/indice.json
+    E-->>W: Lista de campos con miniaturas
+    U->>W: Elige un campo (/campo/id)
+    W->>E: GET datos/campos/id/campo.json
+    E-->>W: Épocas, escalas, conocidos y avisos
+    par Imagen de cada época
+        W->>E: GET imagen WebP
+    and Diferencia de cada época
+        W->>E: GET diferencia WebP
+    and Mediana y rastro
+        W->>E: GET referencia.webp y rastro.webp
     end
+    E-->>W: WebP
+    W->>W: Decodifica cada WebP a RGBA y lo sube como textura
+    W-->>U: Parpadeo, diferencia y marcas de conocidos
     Note over U,E: Ningún pedido sale a IRSA, a los catálogos ni a la API
+```
+
+En el navegador, cada WebP se decodifica una vez a RGBA sin premultiplicar
+ni convertir color (el gris es un dato, no un color) y se sube como textura
+de WebGL 2. Un único fragment shader (`componentes/visor/shaders/`) deshace la
+codificación del contrato y vuelve a MJy/sr, aplica el rango visible y el
+mapa de color (inferno o cividis; berlin, divergente, para la diferencia y la
+resta) y arma la cortina, el fundido y la resta entre dos épocas. Cambiar de
+época es cambiar de textura. Si el navegador no da WebGL, el mismo cálculo,
+escrito en TypeScript en `util/pintura.ts`, pinta en canvas 2D. Los
+marcadores, la lectura de coordenadas (proyección TAN de la cabecera WCS) y
+el zoom usan la misma cuenta lienzo ↔ píxel de `util/vista.ts`.
+
+```mermaid
+flowchart LR
+    json["campo.json<br/>estiramiento y escala_diferencia"]:::hecho --> uni["Uniformes del shader"]:::hecho
+    webp["WebP gris + alfa"]:::hecho --> rgba["RGBA en memoria"]:::hecho --> tex["Texturas WebGL 2"]:::hecho
+    uni --> sh["Fragment shader<br/>MJy/sr, rango, mapa,<br/>cortina, fundido, resta"]:::hecho
+    tex --> sh --> lienzo["Lienzo"]:::hecho
+    rgba -. sin WebGL .-> c2d["util/pintura.ts<br/>canvas 2D"]:::hecho --> lienzo
+
+    classDef hecho fill:#d8f3dc,stroke:#2d6a4f,color:#1b4332
 ```
 
 ### 6. Contrato de datos
@@ -334,6 +361,7 @@ classDiagram
         estiramiento: Estiramiento
         epocas: list~Epoca~
         referencia: str o None
+        escala_diferencia: EscalaDeDiferencia o None
         rastro: str o None
         conocidos: list~ObjetoConocido~
         candidatos: list~Candidato~
@@ -380,6 +408,11 @@ classDiagram
         tipo: TipoDeEstiramiento
         minimo: float
         maximo: float
+        parametro_asinh: float o None
+    }
+    class EscalaDeDiferencia {
+        tipo: lineal-simetrica
+        limite: float
     }
     class Epoca {
         id: str
@@ -689,6 +722,7 @@ spherex-blink/
 │   └── fixture/         FITS sintéticos y respuestas grabadas de IRSA, SIMBAD y Horizons
 ├── web/                 React + Vite + TypeScript
 │   ├── public/datos/    Campos de la demo generados por el pipeline (JSON + WebP, versionados)
+│   ├── public/_headers  Cabeceras de seguridad de Cloudflare Pages (también las sirve vite preview)
 │   ├── src/             Código de la aplicación (taxonomía abajo)
 │   ├── e2e/             Pruebas en navegador con Playwright
 │   ├── scripts/         generar-tipos.mjs (JSON Schema → TypeScript)
@@ -720,20 +754,21 @@ revisa los campos ya generados. Los que pegan a servicios reales llevan
 
 Los campos generados viven en `web/public/datos/` con un nombre por función:
 `indice.json`, y por campo `campos/<id>/campo.json`, `<época>.webp`,
-`<época>-diferencia.webp`, `referencia.webp` y `miniatura.webp`. Las épocas se
+`<época>-diferencia.webp`, `referencia.webp`, `rastro.webp` y `miniatura.webp`. Las épocas se
 llaman `p<pasada>-<AAAAMMDD>-<HHMMSS>` (UTC), así ordenan solas por fecha.
 
 **Web** (`web/src/`):
 
 | Carpeta | Qué vive adentro |
 |---|---|
-| `main.tsx` · `App.tsx` | Arranque y, cuando haya más de una página, el router |
-| `api/` | `tipos.ts`, generado desde el contrato (no se edita a mano), y el acceso a datos |
-| `paginas/` | Una por ruta |
-| `componentes/` | Piezas reutilizables, sin acceso a datos |
-| `layout/` | Estructura común |
-| `hooks/` | Hooks de datos y de comportamiento |
-| `util/` | Funciones puras, sin React |
+| `main.tsx` · `App.tsx` | Arranque, idioma y el router propio (`/`, `/campo/<id>`, `/limites`) |
+| `api/` | `tipos.ts`, generado desde el contrato (no se edita a mano); `cliente.ts` y `campos.ts`, la lectura de `datos/` |
+| `paginas/` | Una por ruta: `Inicio`, `Campo`, `Limites`, `NoEncontrada` |
+| `componentes/` | Piezas reutilizables, sin acceso a datos; `visor/` tiene el lienzo, los dos pintores (WebGL y canvas 2D), los shaders GLSL, los marcadores y las secciones del campo |
+| `layout/` | Barra con navegación e idioma, y pie de reconocimientos |
+| `contexto/` | Idioma y navegación, que cruzan todas las páginas |
+| `hooks/` | Carga de datos, estado del visor con su temporizador, tamaño de un elemento |
+| `util/` | Funciones puras, sin React: estiramiento, WCS, vista, parpadeo, pintura, mapas de color, textos en los dos idiomas |
 | `estilos/` | `tokens.css` (custom properties), `base.css` y una hoja por página |
 | `test/` | Vitest, espejando las carpetas de arriba, más `fixture/` |
 
@@ -773,6 +808,14 @@ npm test                           # Vitest
 npm run build                      # deja la build en web/dist/
 npm run test:e2e                   # Playwright contra la build servida
 ```
+
+Las pruebas e2e levantan `vite preview` en el puerto 4173; si está ocupado,
+`PUERTO_E2E=4190 npm run test:e2e` usa otro.
+
+Con `npm run dev`, `/` lista los campos y `/campo/makemake` o
+`/campo/estrella-de-barnard` abren el visor. Teclado en el visor: ← y →
+cambian de época, la barra espaciadora pausa, + y − acercan, Mayús + flechas
+desplazan y 0 vuelve a la vista entera.
 
 ### Pipeline de datos
 

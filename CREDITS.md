@@ -98,3 +98,13 @@ Se usan como dependencias, sin modificarlas.
 | [React](https://github.com/facebook/react) | MIT | Interfaz web |
 | [Vite](https://github.com/vitejs/vite) | MIT | Build de la web |
 | [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) | MIT | Tipos TS generados desde el contrato |
+| [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm) | MPL-2.0 | Revisión de accesibilidad en las pruebas e2e (sólo desarrollo) |
+
+## Tipografías y mapas de color
+
+| Recurso | Licencia | Uso |
+|---|---|---|
+| [IBM Plex Sans y IBM Plex Mono](https://github.com/IBM/plex), empaquetadas por [Fontsource](https://github.com/fontsource/font-files) | SIL Open Font License 1.1 | Tipografía de la web, servida desde el propio sitio |
+| Mapa inferno de [matplotlib](https://github.com/matplotlib/matplotlib) (Nathaniel J. Smith y Stéfan van der Walt) | CC0 | Mapa de color por defecto del visor (`web/src/util/mapasDeColor.ts`) |
+| Mapa cividis de matplotlib (Nuñez, Anderton y Renslow 2018, PLOS ONE 13(7): e0199239) | Licencia de Matplotlib (compatible con BSD) | Mapa de color que se lee igual con daltonismo |
+| Mapa berlin de las [Scientific colour maps](https://www.fabiocrameri.ch/colourmaps/) de Fabio Crameri (doi:10.5281/zenodo.1243862), tomado de matplotlib | MIT | Escala divergente de la diferencia y de la resta |
