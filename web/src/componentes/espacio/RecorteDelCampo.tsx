@@ -5,13 +5,12 @@ import type { PuntoDeEscena } from '../../util/escalas.ts'
 
 interface Props {
   imagen: string
-  /** Texto del botón, ya traducido. */
+  /** Rótulo del recorte: el nombre del campo, ya traducido. */
   texto: string
   posicion: PuntoDeEscena
   tierra: PuntoDeEscena
   tamano: number
   colorDelMarco: string
-  onVolar: () => void
 }
 
 /**
@@ -27,7 +26,6 @@ export default function RecorteDelCampo({
   tierra,
   tamano,
   colorDelMarco,
-  onVolar,
 }: Props) {
   const mapa = useTexture(imagen, (t) => {
     t.magFilter = NearestFilter
@@ -57,9 +55,10 @@ export default function RecorteDelCampo({
         <meshBasicMaterial color={colorDelMarco} />
       </mesh>
       <Html position={[0, -tamano * 0.62, 0]} center zIndexRange={[20, 0]}>
-        <button type="button" className="escena__rotulo escena__rotulo--campo" onClick={onVolar}>
+        {/* Sólo se ve: el botón para volar está en los controles de la página. */}
+        <span className="escena__rotulo escena__rotulo--campo" aria-hidden="true">
           {texto}
-        </button>
+        </span>
       </Html>
     </group>
   )

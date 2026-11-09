@@ -92,15 +92,10 @@
   font: inherit;
   font-size: var(--escena-texto);
   white-space: nowrap;
-  cursor: pointer;
   opacity: 0.9;
+  pointer-events: none;
 }
 
-.escena__rotulo:hover,
-.escena__rotulo[aria-pressed='true'] {
-  border-color: var(--color-frio);
-  opacity: 1;
-}
 
 .escena__rotulo--campo {
   border-color: var(--escena-calido);
@@ -137,6 +132,18 @@
   padding: var(--espacio-3) var(--espacio-4);
   border-radius: var(--radio);
   background: var(--color-superficie);
+}
+
+.escena__cuerpos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+/* Rótulo del lienzo del cuerpo elegido en la lista. */
+.escena__rotulo[data-elegido] {
+  border-color: var(--color-frio);
+  opacity: 1;
 }
 
 .escena__controles {

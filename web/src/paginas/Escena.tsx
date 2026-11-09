@@ -1,6 +1,11 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import type { Campo, Indice } from '../api/tipos.ts'
 import Enlace from '../componentes/Enlace.tsx'
+import {
+  ID_DEL_OBJETO,
+  IDS_DE_CUERPOS,
+  rotuloDelCuerpo,
+} from '../componentes/espacio/cuerpos.ts'
 import ImagenFijaDeLaEscena from '../componentes/espacio/ImagenFijaDeLaEscena.tsx'
 import PanelDeParalaje from '../componentes/espacio/PanelDeParalaje.tsx'
 import '../estilos/escena.css'
@@ -11,6 +16,7 @@ import { useNavegacion } from '../hooks/useRuta.ts'
 import type { ModoDeEscala } from '../util/escalas.ts'
 import { direccion, type LlegadaDesdeLaEscena } from '../util/rutas.ts'
 import { formatearFechaUtc } from '../util/textos.ts'
+import { DURACION_DEL_VUELO_MS } from '../util/vuelo.ts'
 import { hayWebGL } from '../util/webgl.ts'
 
 // three, drei y astronomy-engine viven en este chunk: sin WebGL no se bajan
@@ -63,6 +69,7 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
   const [indiceDeEpoca, setIndiceDeEpoca] = useState(0)
   const [modo, setModo] = useState<ModoDeEscala>('ilustrativa')
   const [volando, setVolando] = useState(false)
+  const [elegido, setElegido] = useState<string | null>(null)
   const saltear = useRef<HTMLButtonElement>(null)
 
   const epoca = campo.epocas[indiceDeEpoca]!
@@ -70,6 +77,10 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
   const esMakemake = campo.geometria?.objeto.nombre === 'Makemake'
   const nombreDelCampo = campo.nombre[idioma]
   const fecha = formatearFechaUtc(epoca.fecha_utc, idioma)
+  const objeto = campo.geometria
+    ? { nombre: campo.geometria.objeto.nombre, ilustracion: esMakemake }
+    : null
+  const cuerpos = [...IDS_DE_CUERPOS, ...(objeto ? [ID_DEL_OBJETO] : [])]
 
   const irAlCampo = useCallback(() => {
     // El visor abre en la primera época; el estado le dice de dónde viene
@@ -90,7 +101,13 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
       if (evento.key === 'Escape') irAlCampo()
     }
     window.addEventListener('keydown', alApretar)
-    return () => window.removeEventListener('keydown', alApretar)
+    // Red de seguridad: si la escena 3D todavía no cargó cuando se pidió el
+    // vuelo, la cámara no puede avisar que terminó; se corta igual al visor.
+    const respaldo = window.setTimeout(irAlCampo, DURACION_DEL_VUELO_MS + 1500)
+    return () => {
+      window.removeEventListener('keydown', alApretar)
+      window.clearTimeout(respaldo)
+    }
   }, [volando, irAlCampo])
 
   return (
@@ -134,8 +151,8 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
               modo={modo}
               volando={volando}
               movimientoReducido={movimientoReducido}
-              onVolar={volar}
               onVueloTerminado={irAlCampo}
+              elegido={elegido}
             />
           </Suspense>
         ) : (
@@ -150,6 +167,29 @@ function EscenaDelCampo({ campo, indice }: { campo: Campo; indice: Indice }) {
           </div>
         )}
       </div>
+
+      {/*
+       * Los cuerpos se eligen desde acá: botones comunes que se recorren con
+       * Tab, con nombre accesible y del tamaño que pide WCAG 2.5.8 (RF-34,
+       * RNF-03). La cámara va hacia el elegido; los rótulos del lienzo sólo
+       * muestran dónde está cada uno.
+       */}
+      {conWebGL ? (
+        <div className="escena__cuerpos" role="group" aria-label={t('escena.cuerpos')}>
+          {cuerpos.map((id) => (
+            <button
+              key={id}
+              type="button"
+              className="escena__boton escena__boton--cuerpo"
+              aria-pressed={elegido === id}
+              disabled={volando}
+              onClick={() => setElegido((actual) => (actual === id ? null : id))}
+            >
+              {rotuloDelCuerpo(t, id, objeto)}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="escena__controles">
         <div className="escena__tiempo">

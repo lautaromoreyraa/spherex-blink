@@ -9,17 +9,17 @@ interface Props {
   /** Nombre ya traducido: lo que muestra el rótulo y lee el lector de pantalla. */
   rotulo: string
   elegido: boolean
-  onElegir: (cuerpo: CuerpoEnEscena) => void
   colorLiso: string
 }
 
 /**
- * Un cuerpo con su rótulo. El rótulo es un botón de verdad en el DOM (con
- * `Html` de drei), así que se alcanza con Tab, tiene nombre accesible y el
- * lector de pantalla lo anuncia, cosa que una malla del lienzo no puede
- * hacer (RF-34, RNF-03).
+ * Un cuerpo con su rótulo. El rótulo sólo se ve: los rótulos se mueven con
+ * la cámara y se pisan (Mercurio, Venus y el Sol quedan juntos), y como
+ * botones no llegaban al tamaño de objetivo de WCAG 2.5.8. Lo que se enfoca
+ * con Tab y nombra cada cuerpo es la lista de botones de la página (RF-34,
+ * RNF-03), que hace lo mismo.
  */
-export default function Cuerpo({ cuerpo, rotulo, elegido, onElegir, colorLiso }: Props) {
+export default function Cuerpo({ cuerpo, rotulo, elegido, colorLiso }: Props) {
   return (
     <group position={cuerpo.posicion as [number, number, number]}>
       {cuerpo.textura ? (
@@ -31,14 +31,9 @@ export default function Cuerpo({ cuerpo, rotulo, elegido, onElegir, colorLiso }:
         </mesh>
       )}
       <Html position={[0, cuerpo.radio * 1.15, 0]} center zIndexRange={[20, 0]}>
-        <button
-          type="button"
-          className="escena__rotulo"
-          aria-pressed={elegido}
-          onClick={() => onElegir(cuerpo)}
-        >
+        <span className="escena__rotulo" data-elegido={elegido || undefined} aria-hidden="true">
           {rotulo}
-        </button>
+        </span>
       </Html>
     </group>
   )

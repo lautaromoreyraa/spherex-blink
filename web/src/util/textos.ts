@@ -217,6 +217,7 @@ const es = {
   'escena.epocaValor': '{fecha}, pasada {pasada}',
   'escena.pasada': 'pasada {n}',
   'escena.escalaReal': 'Escala real',
+  'escena.cuerpos': 'Acercar la cámara a un cuerpo',
   'escena.volar': 'Volar al campo {campo}',
   'escena.origenConObjeto':
     'La Tierra y {objeto} salen de JPL Horizons; los demás planetas se calculan con astronomy-engine.',
@@ -461,6 +462,7 @@ const en: Record<Clave, string> = {
   'escena.epocaValor': '{fecha}, pass {pasada}',
   'escena.pasada': 'pass {n}',
   'escena.escalaReal': 'True scale',
+  'escena.cuerpos': 'Move the camera to a body',
   'escena.volar': 'Fly to the {campo} field',
   'escena.origenConObjeto':
     'The Earth and {objeto} come from JPL Horizons; the other planets are computed with astronomy-engine.',

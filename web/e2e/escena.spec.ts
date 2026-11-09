@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { sinRedExterna, vigilarErrores } from './ayudas.ts'
 
@@ -8,6 +9,10 @@ import { sinRedExterna, vigilarErrores } from './ayudas.ts'
 // de consola y vigilarErrores la junta.
 
 test.use({ locale: 'es-AR' })
+
+/** La escena 3D ya cargó: los rótulos del lienzo (que sólo se ven) aparecieron. */
+const escenaDibujada = (page: Page) =>
+  expect(page.locator('.escena__rotulo--campo')).toBeVisible()
 
 const volar = (page: Page) =>
   page.locator('.escena__acciones').getByRole('button', { name: 'Volar al campo Makemake' }).click()
@@ -42,7 +47,7 @@ test('la escena muestra la fecha UTC, el aviso de escala y el paralaje', async (
   const errores = vigilarErrores(page)
   await page.goto('/escena/makemake')
   // Las texturas y el lienzo, cargados bajo la CSP.
-  await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toBeAttached()
+  await escenaDibujada(page)
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('El Sistema Solar en cada pasada')
   await expect(page.getByRole('note')).toContainText('no están a escala')
@@ -60,14 +65,20 @@ test('la escena muestra la fecha UTC, el aviso de escala y el paralaje', async (
   expect(errores).toEqual([])
 })
 
-test('cada cuerpo es un botón con nombre accesible', async ({ page }) => {
+test('cada cuerpo es un botón con nombre accesible que acerca la cámara', async ({ page }) => {
   await page.goto('/escena/makemake')
+  await escenaDibujada(page)
+  const grupo = page.getByRole('group', { name: 'Acercar la cámara a un cuerpo' })
   for (const nombre of ['Sol', 'Tierra', 'Júpiter', 'Neptuno', 'Makemake (ilustración)']) {
-    const rotulo = page.getByRole('button', { name: nombre, exact: true })
-    await expect(rotulo).toBeAttached()
-    await rotulo.focus()
-    await expect(rotulo).toBeFocused()
+    const boton = grupo.getByRole('button', { name: nombre, exact: true })
+    await boton.focus()
+    await expect(boton).toBeFocused()
   }
+  const tierra = grupo.getByRole('button', { name: 'Tierra', exact: true })
+  await tierra.press('Enter')
+  await expect(tierra).toHaveAttribute('aria-pressed', 'true')
+  // Los rótulos del lienzo sólo se ven: no duplican los botones para el lector.
+  await expect(page.locator('.escena__rotulo').first()).toHaveAttribute('aria-hidden', 'true')
 })
 
 test('el interruptor de escala real cambia el aviso', async ({ page }) => {
@@ -82,7 +93,7 @@ test('desde la escena se vuela al visor del campo de Makemake', async ({ page })
   const errores = vigilarErrores(page)
   await sinRedExterna(page)
   await page.goto('/escena/makemake')
-  await expect(page.getByRole('button', { name: 'Tierra', exact: true })).toBeAttached()
+  await escenaDibujada(page)
   const inicio = Date.now()
   await volar(page)
   await expect(page.getByText('Volando al campo Makemake…')).toBeVisible()
@@ -206,5 +217,48 @@ test.describe('en inglés (RNF-06)', () => {
     ).toBeVisible()
     await expect(page.getByText(/not the one for this field/)).toBeVisible()
     await expect(page.getByText(/passes 1, 2, and 3/)).toBeVisible()
+  })
+})
+
+test.describe('accesibilidad de la escena (RNF-03)', () => {
+  /** Todas las violaciones de axe, de cualquier gravedad, como texto legible. */
+  async function violaciones(page: Page): Promise<string[]> {
+    const resultado = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
+    return resultado.violations.map(
+      (v) => `${v.impact}: ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`,
+    )
+  }
+
+  test('axe no encuentra violaciones en /escena/makemake', async ({ page }) => {
+    await page.goto('/escena/makemake')
+    await escenaDibujada(page)
+    await page.waitForLoadState('networkidle')
+    expect(await violaciones(page)).toEqual([])
+  })
+
+  test('ni con la escala real ni durante el vuelo', async ({ page }) => {
+    await page.goto('/escena/makemake')
+    await escenaDibujada(page)
+    await page.getByRole('button', { name: 'Escala real' }).click()
+    expect(await violaciones(page)).toEqual([])
+    await page.getByRole('button', { name: 'Escala real' }).click()
+    await volar(page)
+    await expect(page.getByRole('button', { name: 'Saltear el vuelo (Esc)' })).toBeFocused()
+    expect(await violaciones(page)).toEqual([])
+  })
+
+  test('ni sin WebGL, ni en el visor al que llega el vuelo', async ({ page }) => {
+    await sinWebGL(page)
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/escena/makemake')
+    await expect(page.getByRole('img', { name: /Captura de la escena/ })).toBeVisible()
+    expect(await violaciones(page)).toEqual([])
+    await volar(page)
+    await llegoAlVisor(page)
+    // En el visor rige el criterio del visor: nada serio ni crítico.
+    const graves = (await violaciones(page)).filter((v) => /^(serious|critical):/.test(v))
+    expect(graves).toEqual([])
   })
 })

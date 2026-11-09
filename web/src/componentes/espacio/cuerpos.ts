@@ -1,4 +1,5 @@
 import type { Planeta } from '../../util/efemerides.ts'
+import type { Clave, Valores } from '../../util/textos.ts'
 
 /**
  * Cuerpos que dibuja la escena, con su radio medio y su textura.
@@ -32,6 +33,38 @@ export const NOMBRE_DE_MAKEMAKE = 'Makemake'
 export const MAKEMAKE: DatosDeCuerpo = {
   radioKm: 715,
   textura: 'makemake-ilustracion',
+}
+
+/**
+ * Ids de los cuerpos en el orden en que se recorren con Tab. Están acá y no
+ * se sacan de efemerides.ts para que la página los liste sin cargar
+ * astronomy-engine, que va en el chunk 3D (RNF-13).
+ */
+export const IDS_DE_CUERPOS = [
+  'sol',
+  'mercurio',
+  'venus',
+  'tierra',
+  'marte',
+  'jupiter',
+  'saturno',
+  'urano',
+  'neptuno',
+] as const satisfies readonly ('sol' | Planeta)[]
+
+/** El objeto del campo (Makemake), cuando el campo tiene `geometria`. */
+export const ID_DEL_OBJETO = 'objeto'
+
+/** Nombre traducido de un cuerpo (RNF-06); el del objeto es propio. */
+export function rotuloDelCuerpo(
+  t: (clave: Clave, valores?: Valores) => string,
+  id: string,
+  objeto: { nombre: string; ilustracion: boolean } | null,
+): string {
+  if (id === ID_DEL_OBJETO && objeto) {
+    return objeto.ilustracion ? t('escena.ilustracion', { nombre: objeto.nombre }) : objeto.nombre
+  }
+  return t(`escena.cuerpo.${id}` as Clave)
 }
 
 export function rutaDeTextura(nombre: string, base: string = import.meta.env.BASE_URL): string {

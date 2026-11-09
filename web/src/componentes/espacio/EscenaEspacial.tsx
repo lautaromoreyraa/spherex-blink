@@ -4,12 +4,11 @@ import { Suspense, useCallback, useMemo, useState } from 'react'
 import { BackSide } from 'three'
 import type { Campo } from '../../api/tipos.ts'
 import { useIdioma } from '../../hooks/useIdioma.ts'
-import type { Clave } from '../../util/textos.ts'
 import type { ModoDeEscala } from '../../util/escalas.ts'
 import { rutaDeDatos } from '../../util/rutas.ts'
 import Camara, { type Enfoque } from './Camara.tsx'
 import Cuerpo from './Cuerpo.tsx'
-import { rutaDeTextura } from './cuerpos.ts'
+import { rotuloDelCuerpo, rutaDeTextura } from './cuerpos.ts'
 import { armarModelo, encuadreInicial, type CuerpoEnEscena } from './modelo.ts'
 import RecorteDelCampo from './RecorteDelCampo.tsx'
 
@@ -19,7 +18,8 @@ export interface PropsDeLaEscena {
   modo: ModoDeEscala
   volando: boolean
   movimientoReducido: boolean
-  onVolar: () => void
+  /** Id del cuerpo elegido en la lista de la página; la cámara lo sigue. */
+  elegido: string | null
   onVueloTerminado: () => void
 }
 
@@ -58,21 +58,22 @@ export default function EscenaEspacial({
   modo,
   volando,
   movimientoReducido,
-  onVolar,
   onVueloTerminado,
+  elegido,
 }: PropsDeLaEscena) {
   const [colores, setColores] = useState<Colores | null>(null)
   const dprMaximo = Math.min(typeof window === 'undefined' ? 1 : window.devicePixelRatio, 2)
   const [dpr, setDpr] = useState(dprMaximo)
-  const [elegido, setElegido] = useState<CuerpoEnEscena | null>(null)
   const { t, idioma } = useIdioma()
 
-  // Los rótulos se traducen acá, fuera del lienzo: los botones de `Html`
-  // viven en otra raíz de React y no ven el contexto de idioma (RNF-06).
-  const rotuloDe = (cuerpo: CuerpoEnEscena): string => {
-    if (cuerpo.nombre === null) return t(`escena.cuerpo.${cuerpo.id}` as Clave)
-    return cuerpo.ilustracion ? t('escena.ilustracion', { nombre: cuerpo.nombre }) : cuerpo.nombre
-  }
+  // Los rótulos se traducen acá, fuera del lienzo: los de `Html` viven en
+  // otra raíz de React y no ven el contexto de idioma (RNF-06).
+  const rotuloDe = (cuerpo: CuerpoEnEscena): string =>
+    rotuloDelCuerpo(
+      t,
+      cuerpo.id,
+      cuerpo.nombre ? { nombre: cuerpo.nombre, ilustracion: cuerpo.ilustracion } : null,
+    )
 
   const contenedor = useCallback((elemento: HTMLDivElement | null) => {
     if (elemento) setColores(leerColores(elemento))
@@ -83,7 +84,7 @@ export default function EscenaEspacial({
   const encuadre = useMemo(() => encuadreInicial(armarModelo(campo, 0, modo).campo), [campo, modo])
 
   // El enfoque sigue al cuerpo elegido cuando cambia la época o la escala.
-  const actual = elegido ? modelo.cuerpos.find((c) => c.id === elegido.id) : undefined
+  const actual = elegido ? modelo.cuerpos.find((c) => c.id === elegido) : undefined
   const posicionActual = actual?.posicion
   const radioActual = actual?.radio
   const enfoque = useMemo<Enfoque | null>(
@@ -159,19 +160,17 @@ export default function EscenaEspacial({
                 key={cuerpo.id}
                 cuerpo={cuerpo}
                 rotulo={rotuloDe(cuerpo)}
-                elegido={elegido?.id === cuerpo.id}
-                onElegir={setElegido}
+                elegido={elegido === cuerpo.id}
                 colorLiso={colores.liso}
               />
             ))}
             <RecorteDelCampo
               imagen={rutaDeDatos(primera.imagen)}
-              texto={t('escena.volar', { campo: campo.nombre[idioma] })}
+              texto={campo.nombre[idioma]}
               posicion={modelo.campo.posicion}
               tierra={modelo.campo.tierra}
               tamano={modelo.campo.tamano}
               colorDelMarco={colores.marco}
-              onVolar={onVolar}
             />
           </Suspense>
         </Canvas>
