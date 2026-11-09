@@ -18,7 +18,9 @@ from contrato.comunes import (
 )
 
 TipoDeEstiramiento = Literal["lineal", "asinh"]
-TipoDeObjetoConocido = Literal["estrella", "asteroide", "cometa", "tno", "planeta", "enana-marron"]
+TipoDeObjetoConocido = Literal[
+    "estrella", "asteroide", "cometa", "tno", "planeta-enano", "enana-marron"
+]
 FuenteDeCatalogo = Literal["SkyBoT", "Horizons", "SIMBAD"]
 EstadoDeIdentificacion = Literal["conocido", "sin-identificar"]
 
@@ -83,6 +85,19 @@ class PosicionEsperada(ModeloDelContrato):
     x: float = Field(description="Píxel de la rejilla, origen arriba a la izquierda")
     y: float = Field(description="Píxel de la rejilla, origen arriba a la izquierda")
     dentro_del_campo: bool
+    distancia_ua: float | None = Field(
+        gt=0, description="Distancia al observador en UA; null para las estrellas"
+    )
+
+
+class DeteccionDeConocido(ModeloDelContrato):
+    """Dónde se midió un objeto conocido en una época y a cuánto quedó de lo esperado."""
+
+    epoca_id: IdentificadorKebab
+    x: float = Field(description="Centroide medido, en píxeles de la rejilla")
+    y: float = Field(description="Centroide medido, en píxeles de la rejilla")
+    snr: float = Field(description="Relación señal/ruido de la medición")
+    distancia_px: float = Field(ge=0, description="Distancia a la posición esperada")
 
 
 class Magnitud(ModeloDelContrato):
@@ -96,6 +111,9 @@ class ObjetoConocido(ModeloDelContrato):
     nombre: str = Field(min_length=1)
     tipo: TipoDeObjetoConocido
     posiciones: list[PosicionEsperada]
+    deteccion: list[DeteccionDeConocido] = Field(
+        description="Mediciones en la imagen; vacía si no se midió"
+    )
     fuente: FuenteDeCatalogo
     consultado_en: datetime
     magnitud: Magnitud | None
@@ -146,6 +164,44 @@ class Limites(ModeloDelContrato):
     recuperacion: list[PuntoDeRecuperacion]
 
 
+MarcoDeReferencia = Literal["heliocentrico-ecliptico-J2000"]
+
+
+class PuntoHeliocentrico(ModeloDelContrato):
+    """Posición de un cuerpo en una época, centrada en el Sol (RF-34, RF-35)."""
+
+    epoca_id: IdentificadorKebab
+    x_ua: float
+    y_ua: float
+    z_ua: float
+
+
+class ObjetoEnLaEscena(ModeloDelContrato):
+    """El cuerpo del Sistema Solar del campo, con su posición en cada época."""
+
+    nombre: str = Field(min_length=1)
+    posiciones: list[PuntoHeliocentrico]
+
+
+class Geometria(ModeloDelContrato):
+    """Dónde estaban la Tierra y el objeto cuando se tomó cada época (JPL Horizons).
+
+    La escena 3D dibuja exactamente esta geometría, la misma que usó el
+    pipeline para marcar al objeto, en vez de recalcularla en el navegador.
+    """
+
+    marco: MarcoDeReferencia
+    tierra: list[PuntoHeliocentrico]
+    objeto: ObjetoEnLaEscena
+
+
+class Procedencia(ModeloDelContrato):
+    """Con qué versión del pipeline y cuándo se consultó IRSA (RNF-12)."""
+
+    version_pipeline: str = Field(min_length=1)
+    irsa_consultado_en: datetime = Field(description="Cuándo se buscaron las observaciones")
+
+
 class Campo(ModeloDelContrato):
     """Raíz de `campo.json`."""
 
@@ -158,13 +214,17 @@ class Campo(ModeloDelContrato):
     rejilla: Rejilla
     estiramiento: Estiramiento
     epocas: list[Epoca] = Field(description="Ordenadas por mjd")
-    referencia: RutaRelativa = Field(description="Mediana de las épocas")
+    referencia: RutaRelativa | None = Field(description="Mediana de las épocas")
     rastro: RutaRelativa | None = Field(description="Máximo por píxel (RF-17)")
     conocidos: list[ObjetoConocido]
     candidatos: list[Candidato]
+    geometria: Geometria | None = Field(
+        description="Para la escena 3D; null si el campo no sigue un cuerpo del Sistema Solar"
+    )
     limites: Limites | None
     avisos: list[TextoTraducido]
     creditos: str = Field(min_length=1)
+    procedencia: Procedencia
 
     @model_validator(mode="after")
     def _epocas_coherentes(self) -> Self:
@@ -179,9 +239,14 @@ class Campo(ModeloDelContrato):
             raise ValueError("hay épocas con el mismo id")
 
         conocidas = set(ids)
-        citadas = {p.epoca_id for o in self.conocidos for p in o.posiciones} | {
-            d.epoca_id for c in self.candidatos for d in c.detecciones
-        }
+        citadas = (
+            {p.epoca_id for o in self.conocidos for p in o.posiciones}
+            | {d.epoca_id for o in self.conocidos for d in o.deteccion}
+            | {d.epoca_id for c in self.candidatos for d in c.detecciones}
+        )
+        if self.geometria is not None:
+            citadas |= {p.epoca_id for p in self.geometria.tierra}
+            citadas |= {p.epoca_id for p in self.geometria.objeto.posiciones}
         desconocidas = sorted(citadas - conocidas)
         if desconocidas:
             raise ValueError(f"se citan épocas que el campo no tiene: {desconocidas}")
