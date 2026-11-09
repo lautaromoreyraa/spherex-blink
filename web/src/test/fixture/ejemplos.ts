@@ -4,7 +4,7 @@
 import type { Campo, Indice } from '../../api/tipos.ts'
 
 export const indiceDeEjemplo: Indice = {
-  version_contrato: '0.2.0',
+  version_contrato: '0.3.0',
   generado_en: '2026-11-08T12:00:00Z',
   campos: [
     {
@@ -63,6 +63,7 @@ export const campoDeEjemplo: Campo = {
     tipo: 'asinh',
     minimo: 0.5,
     maximo: 40,
+    parametro_asinh: 0.1,
   },
   epocas: [
     {
@@ -112,7 +113,11 @@ export const campoDeEjemplo: Campo = {
     },
   ],
   referencia: 'campos/ejemplo-estrella-de-barnard/referencia.webp',
-  rastro: null,
+  escala_diferencia: {
+    tipo: 'lineal-simetrica',
+    limite: 2.5,
+  },
+  rastro: 'campos/ejemplo-estrella-de-barnard/rastro.webp',
   conocidos: [
     {
       nombre: 'Estrella de Barnard',

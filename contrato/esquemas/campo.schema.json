@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "contrato 0.2.0",
+  "$comment": "contrato 0.3.0",
   "$defs": {
     "Candidato": {
       "additionalProperties": false,
@@ -226,9 +226,30 @@
       "title": "Epoca",
       "type": "object"
     },
+    "EscalaDeDiferencia": {
+      "additionalProperties": false,
+      "description": "Cómo se pasó la diferencia a los WebP (RF-06, RF-12).\n\nLineal y simétrica alrededor del gris 128 («sin cambio»): un gris ``g``\nvale ``(g - 128) / 127 * limite`` MJy/sr, de modo que 255 es ``+limite``\n(más brillo que la mediana de las otras épocas) y 1 es ``-limite``. Lo que\npasa del límite queda recortado en los extremos.",
+      "properties": {
+        "tipo": {
+          "const": "lineal-simetrica",
+          "type": "string"
+        },
+        "limite": {
+          "description": "MJy/sr que se pintan en los extremos (±)",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "tipo",
+        "limite"
+      ],
+      "title": "EscalaDeDiferencia",
+      "type": "object"
+    },
     "Estiramiento": {
       "additionalProperties": false,
-      "description": "Escala de brillo común a todas las épocas del campo (RF-05).",
+      "description": "Escala de brillo común a todas las épocas del campo (RF-05).\n\nCon estos tres números el visor deshace el estiramiento de cada WebP y\nvuelve a MJy/sr (RF-37): un gris ``g`` de 0 a 255 vale\n``minimo + (maximo - minimo) * a * sinh(g / 255 * asinh(1 / a))``, con\n``a = parametro_asinh``. Los valores son con el fondo mediano de cada época\nya restado.",
       "properties": {
         "tipo": {
           "enum": [
@@ -238,18 +259,31 @@
           "type": "string"
         },
         "minimo": {
-          "description": "MJy/sr que se pintan negros",
+          "description": "MJy/sr (fondo restado) que se pintan negros",
           "type": "number"
         },
         "maximo": {
-          "description": "MJy/sr que se pintan blancos",
+          "description": "MJy/sr (fondo restado) que se pintan blancos",
           "type": "number"
+        },
+        "parametro_asinh": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Parámetro a de asinh(x / a) / asinh(1 / a); null con estiramiento lineal"
         }
       },
       "required": [
         "tipo",
         "minimo",
-        "maximo"
+        "maximo",
+        "parametro_asinh"
       ],
       "title": "Estiramiento",
       "type": "object"
@@ -759,6 +793,17 @@
       ],
       "description": "Mediana de las épocas"
     },
+    "escala_diferencia": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EscalaDeDiferencia"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Escala de los WebP de diferencia; null si el campo no tiene diferencias"
+    },
     "rastro": {
       "anyOf": [
         {
@@ -830,6 +875,7 @@
     "estiramiento",
     "epocas",
     "referencia",
+    "escala_diferencia",
     "rastro",
     "conocidos",
     "candidatos",

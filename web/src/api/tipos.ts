@@ -45,6 +45,10 @@ export interface Campo {
    */
   referencia: string | null
   /**
+   * Escala de los WebP de diferencia; null si el campo no tiene diferencias
+   */
+  escala_diferencia: EscalaDeDiferencia | null
+  /**
    * Máximo por píxel (RF-17)
    */
   rastro: string | null
@@ -108,19 +112,29 @@ export interface Rejilla {
 /**
  * Escala de brillo común a todas las épocas del campo (RF-05).
  *
+ * Con estos tres números el visor deshace el estiramiento de cada WebP y
+ * vuelve a MJy/sr (RF-37): un gris ``g`` de 0 a 255 vale
+ * ``minimo + (maximo - minimo) * a * sinh(g / 255 * asinh(1 / a))``, con
+ * ``a = parametro_asinh``. Los valores son con el fondo mediano de cada época
+ * ya restado.
+ *
  * This interface was referenced by `Contrato`'s JSON-Schema
  * via the `definition` "Estiramiento".
  */
 export interface Estiramiento {
   tipo: 'lineal' | 'asinh'
   /**
-   * MJy/sr que se pintan negros
+   * MJy/sr (fondo restado) que se pintan negros
    */
   minimo: number
   /**
-   * MJy/sr que se pintan blancos
+   * MJy/sr (fondo restado) que se pintan blancos
    */
   maximo: number
+  /**
+   * Parámetro a de asinh(x / a) / asinh(1 / a); null con estiramiento lineal
+   */
+  parametro_asinh: number | null
 }
 /**
  * Un recorte usado en el campo.
@@ -176,6 +190,24 @@ export interface FuenteDeEpoca {
   uri: string
   planeid: string
   version_proceso: string
+}
+/**
+ * Cómo se pasó la diferencia a los WebP (RF-06, RF-12).
+ *
+ * Lineal y simétrica alrededor del gris 128 («sin cambio»): un gris ``g``
+ * vale ``(g - 128) / 127 * limite`` MJy/sr, de modo que 255 es ``+limite``
+ * (más brillo que la mediana de las otras épocas) y 1 es ``-limite``. Lo que
+ * pasa del límite queda recortado en los extremos.
+ *
+ * This interface was referenced by `Contrato`'s JSON-Schema
+ * via the `definition` "EscalaDeDiferencia".
+ */
+export interface EscalaDeDiferencia {
+  tipo: 'lineal-simetrica'
+  /**
+   * MJy/sr que se pintan en los extremos (±)
+   */
+  limite: number
 }
 /**
  * Cuerpo del Sistema Solar o estrella de catálogo con posición esperada.

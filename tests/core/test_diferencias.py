@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from core.diferencias import diferencias, mediana
+from core.diferencias import diferencias, mediana, rastro
 
 
 def _epoca(x: int) -> np.ndarray:
@@ -50,3 +50,21 @@ def test_la_mediana_ignora_los_nan() -> None:
     b = np.array([[3.0, 2.0]])
 
     assert np.array_equal(mediana([a, b]), np.array([[2.0, 2.0]]))
+
+
+def test_el_rastro_guarda_cada_posicion_de_lo_que_se_mueve() -> None:
+    epocas = [_epoca(x) for x in (10, 12, 14)]
+
+    maximo = rastro(epocas)
+
+    # RF-17: la fuente que se corre deja un punto en cada posición.
+    for x in (10, 12, 14):
+        assert maximo[20, x] > 3.5
+    assert maximo[10, 10] == pytest.approx(epocas[0][10, 10])
+
+
+def test_el_rastro_ignora_los_nan() -> None:
+    a = np.array([[1.0, np.nan]])
+    b = np.array([[3.0, 2.0]])
+
+    assert np.array_equal(rastro([a, b]), np.array([[3.0, 2.0]]))

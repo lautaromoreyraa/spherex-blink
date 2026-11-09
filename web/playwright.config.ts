@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const puerto = 4173
+// PUERTO_E2E deja correr las pruebas en otro puerto cuando el 4173 está
+// ocupado (por ejemplo, otra rama con su propio `vite preview`): si no, se
+// reusaría ese servidor y se probaría otra build.
+const puerto = Number(process.env.PUERTO_E2E ?? 4173)
 
 // Las pruebas corren contra la build servida con `vite preview`, que es lo
 // mismo que se publica en Cloudflare Pages.

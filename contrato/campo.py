@@ -39,17 +39,46 @@ class Rejilla(ModeloDelContrato):
 
 
 class Estiramiento(ModeloDelContrato):
-    """Escala de brillo común a todas las épocas del campo (RF-05)."""
+    """Escala de brillo común a todas las épocas del campo (RF-05).
+
+    Con estos tres números el visor deshace el estiramiento de cada WebP y
+    vuelve a MJy/sr (RF-37): un gris ``g`` de 0 a 255 vale
+    ``minimo + (maximo - minimo) * a * sinh(g / 255 * asinh(1 / a))``, con
+    ``a = parametro_asinh``. Los valores son con el fondo mediano de cada época
+    ya restado.
+    """
 
     tipo: TipoDeEstiramiento
-    minimo: float = Field(description="MJy/sr que se pintan negros")
-    maximo: float = Field(description="MJy/sr que se pintan blancos")
+    minimo: float = Field(description="MJy/sr (fondo restado) que se pintan negros")
+    maximo: float = Field(description="MJy/sr (fondo restado) que se pintan blancos")
+    parametro_asinh: float | None = Field(
+        gt=0,
+        description="Parámetro a de asinh(x / a) / asinh(1 / a); null con estiramiento lineal",
+    )
 
     @model_validator(mode="after")
     def _maximo_mayor_que_minimo(self) -> Self:
         if self.maximo <= self.minimo:
             raise ValueError("el máximo del estiramiento tiene que ser mayor que el mínimo")
+        if (self.tipo == "asinh") != (self.parametro_asinh is not None):
+            raise ValueError("parametro_asinh va con el estiramiento asinh y sólo con él")
         return self
+
+
+TipoDeEscalaDeDiferencia = Literal["lineal-simetrica"]
+
+
+class EscalaDeDiferencia(ModeloDelContrato):
+    """Cómo se pasó la diferencia a los WebP (RF-06, RF-12).
+
+    Lineal y simétrica alrededor del gris 128 («sin cambio»): un gris ``g``
+    vale ``(g - 128) / 127 * limite`` MJy/sr, de modo que 255 es ``+limite``
+    (más brillo que la mediana de las otras épocas) y 1 es ``-limite``. Lo que
+    pasa del límite queda recortado en los extremos.
+    """
+
+    tipo: TipoDeEscalaDeDiferencia
+    limite: float = Field(gt=0, description="MJy/sr que se pintan en los extremos (±)")
 
 
 class FuenteDeEpoca(ModeloDelContrato):
@@ -215,6 +244,9 @@ class Campo(ModeloDelContrato):
     estiramiento: Estiramiento
     epocas: list[Epoca] = Field(description="Ordenadas por mjd")
     referencia: RutaRelativa | None = Field(description="Mediana de las épocas")
+    escala_diferencia: EscalaDeDiferencia | None = Field(
+        description="Escala de los WebP de diferencia; null si el campo no tiene diferencias"
+    )
     rastro: RutaRelativa | None = Field(description="Máximo por píxel (RF-17)")
     conocidos: list[ObjetoConocido]
     candidatos: list[Candidato]
@@ -237,6 +269,10 @@ class Campo(ModeloDelContrato):
         ids = [epoca.id for epoca in self.epocas]
         if len(set(ids)) != len(ids):
             raise ValueError("hay épocas con el mismo id")
+
+        con_diferencia = any(epoca.diferencia is not None for epoca in self.epocas)
+        if con_diferencia != (self.escala_diferencia is not None):
+            raise ValueError("escala_diferencia va si y sólo si alguna época tiene diferencia")
 
         conocidas = set(ids)
         citadas = (

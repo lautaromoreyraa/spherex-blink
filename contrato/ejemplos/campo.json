@@ -25,7 +25,7 @@
       "CUNIT2": "deg"
     }
   },
-  "estiramiento": { "tipo": "asinh", "minimo": 0.5, "maximo": 40.0 },
+  "estiramiento": { "tipo": "asinh", "minimo": 0.5, "maximo": 40.0, "parametro_asinh": 0.1 },
   "epocas": [
     {
       "id": "p1-a",
@@ -74,7 +74,8 @@
     }
   ],
   "referencia": "campos/ejemplo-estrella-de-barnard/referencia.webp",
-  "rastro": null,
+  "escala_diferencia": { "tipo": "lineal-simetrica", "limite": 2.5 },
+  "rastro": "campos/ejemplo-estrella-de-barnard/rastro.webp",
   "conocidos": [
     {
       "nombre": "Estrella de Barnard",
