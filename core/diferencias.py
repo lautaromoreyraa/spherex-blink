@@ -26,6 +26,17 @@ def mediana(imagenes: Sequence[Imagen]) -> Imagen:
         return np.asarray(np.nanmedian(np.stack(imagenes), axis=0), dtype=np.float64)
 
 
+def rastro(imagenes: Sequence[Imagen]) -> Imagen:
+    """Máximo por píxel de todas las épocas (RF-17), ignorando NaN.
+
+    Un objeto que se mueve deja una fila de puntos: en cada fecha estuvo en
+    otro píxel y el máximo guarda todas sus posiciones a la vez.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        return np.asarray(np.nanmax(np.stack(imagenes), axis=0), dtype=np.float64)
+
+
 def diferencias(imagenes: Sequence[Imagen]) -> list[Imagen] | None:
     """Cada época menos la mediana de las demás; None con menos de 3 épocas."""
     if len(imagenes) < MINIMO_DE_EPOCAS:
