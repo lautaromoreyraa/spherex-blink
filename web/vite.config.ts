@@ -15,6 +15,12 @@ export default defineConfig({
   preview: {
     headers: cabeceras,
   },
+  build: {
+    // El chunk de la escena 3D (three + drei) pesa ~1 MB sin comprimir. El
+    // presupuesto que importa es en gzip y lo controla `npm run presupuesto`
+    // (RNF-13); este aviso de Vite sólo agregaría ruido a cada build.
+    chunkSizeWarningLimit: 1200,
+  },
   test: {
     // La lógica pura se prueba en Node; las pruebas en navegador son las de
     // Playwright (e2e/), que Vitest no tiene que levantar.

@@ -14,7 +14,8 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "generar:tipos": "node scripts/generar-tipos.mjs"
+    "generar:tipos": "node scripts/generar-tipos.mjs",
+    "presupuesto": "node scripts/medir-presupuesto.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
