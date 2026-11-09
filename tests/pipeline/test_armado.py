@@ -154,7 +154,9 @@ def test_el_campo_valida_contra_el_schema_y_sus_rutas_existen(
 
     assert [e.message for e in validador.iter_errors(documento)] == []
     rutas = (
-        [campo.referencia] + [e.imagen for e in campo.epocas] + [e.diferencia for e in campo.epocas]
+        [campo.referencia, campo.rastro]
+        + [e.imagen for e in campo.epocas]
+        + [e.diferencia for e in campo.epocas]
     )
     for ruta in rutas:
         assert ruta is not None

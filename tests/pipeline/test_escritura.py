@@ -30,7 +30,7 @@ def test_dos_escrituras_dan_bytes_identicos_y_fin_de_linea_lf(tmp_path: Path) ->
 
     assert primera == segunda
     assert b"\r\n" not in primera
-    assert json.loads(primera)["version_contrato"] == "0.2.0"
+    assert json.loads(primera)["version_contrato"] == "0.3.0"
 
 
 def test_no_escribe_un_documento_mutado_fuera_de_contrato(tmp_path: Path) -> None:

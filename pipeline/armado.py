@@ -21,6 +21,7 @@ from contrato.campo import (
     Campo,
     DeteccionDeConocido,
     Epoca,
+    EscalaDeDiferencia,
     Estiramiento,
     FuenteDeEpoca,
     Geometria,
@@ -37,10 +38,11 @@ from contrato.indice import ResumenDeCampo
 from core.cache import CacheEnDisco
 from core.catalogo import consultar_simbad
 from core.configuracion import Configuracion
-from core.diferencias import diferencias, mediana
+from core.diferencias import diferencias, mediana, rastro
 from core.efemerides import TIERRA, Horizons
 from core.epocas import elegir_epocas
 from core.estiramiento import (
+    PARAMETRO_ASINH,
     a_ocho_bits,
     diferencia_a_ocho_bits,
     escala_comun,
@@ -298,7 +300,8 @@ def armar_campo(definicion: DefinicionDeCampo, contexto: Contexto) -> CampoGener
     escala = escala_comun(sin_fondo)
     referencia_img = mediana(sin_fondo)
     difs = diferencias(sin_fondo)
-    limite = limite_de_la_diferencia(difs) if difs is not None else None
+    # Redondeado antes de codificar: el WebP y campo.json usan el mismo número.
+    limite = round(limite_de_la_diferencia(difs), 6) if difs is not None else None
     if difs is None:
         avisos.append(
             _aviso(
@@ -348,6 +351,14 @@ def armar_campo(definicion: DefinicionDeCampo, contexto: Contexto) -> CampoGener
     )
     escribir_webp(
         a_ocho_bits(referencia_img, escala), valido_ref, contexto.salida / ruta("miniatura.webp")
+    )
+    # El rastro usa el mismo estiramiento que las épocas: así un punto del
+    # rastro tiene el mismo brillo que el objeto en la fecha en que estuvo ahí.
+    rastro_img = rastro(sin_fondo)
+    escribir_webp(
+        a_ocho_bits(rastro_img, escala),
+        np.isfinite(rastro_img),
+        contexto.salida / ruta("rastro.webp"),
     )
 
     longitudes = [e.longitud_onda_um for e in epocas]
@@ -520,11 +531,17 @@ def armar_campo(definicion: DefinicionDeCampo, contexto: Contexto) -> CampoGener
             wcs=rejilla.cabecera(),
         ),
         estiramiento=Estiramiento(
-            tipo="asinh", minimo=round(escala.minimo, 6), maximo=round(escala.maximo, 6)
+            tipo="asinh",
+            minimo=round(escala.minimo, 6),
+            maximo=round(escala.maximo, 6),
+            parametro_asinh=PARAMETRO_ASINH,
         ),
         epocas=epocas,
         referencia=ruta("referencia.webp"),
-        rastro=None,
+        escala_diferencia=None
+        if limite is None
+        else EscalaDeDiferencia(tipo="lineal-simetrica", limite=limite),
+        rastro=ruta("rastro.webp"),
         conocidos=conocidos,
         candidatos=[],
         geometria=geometria,

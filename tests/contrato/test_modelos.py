@@ -44,7 +44,26 @@ def test_rechaza_una_posicion_de_una_epoca_que_no_existe() -> None:
 
 def test_rechaza_un_estiramiento_con_maximo_menor_o_igual_al_minimo() -> None:
     with pytest.raises(ValidationError, match="mayor que el mínimo"):
-        Estiramiento(tipo="lineal", minimo=1.0, maximo=1.0)
+        Estiramiento(tipo="lineal", minimo=1.0, maximo=1.0, parametro_asinh=None)
+
+
+def test_el_estiramiento_asinh_pide_su_parametro_y_el_lineal_no_lo_lleva() -> None:
+    with pytest.raises(ValidationError, match="parametro_asinh"):
+        Estiramiento(tipo="asinh", minimo=0.0, maximo=1.0, parametro_asinh=None)
+    with pytest.raises(ValidationError, match="parametro_asinh"):
+        Estiramiento(tipo="lineal", minimo=0.0, maximo=1.0, parametro_asinh=0.1)
+
+
+def test_la_escala_de_la_diferencia_va_con_las_diferencias() -> None:
+    sin_escala = _campo() | {"escala_diferencia": None}
+    with pytest.raises(ValidationError, match="escala_diferencia"):
+        Campo.model_validate(sin_escala)
+
+    datos = _campo()
+    for epoca in datos["epocas"]:
+        epoca["diferencia"] = None
+    with pytest.raises(ValidationError, match="escala_diferencia"):
+        Campo.model_validate(datos)
 
 
 @pytest.mark.parametrize(

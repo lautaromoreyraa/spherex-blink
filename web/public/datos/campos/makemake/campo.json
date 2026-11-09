@@ -41,7 +41,8 @@
   "estiramiento": {
     "tipo": "asinh",
     "minimo": -0.029801,
-    "maximo": 1.527603
+    "maximo": 1.527603,
+    "parametro_asinh": 0.1
   },
   "epocas": [
     {
@@ -181,7 +182,11 @@
     }
   ],
   "referencia": "campos/makemake/referencia.webp",
-  "rastro": null,
+  "escala_diferencia": {
+    "tipo": "lineal-simetrica",
+    "limite": 0.159433
+  },
+  "rastro": "campos/makemake/rastro.webp",
   "conocidos": [
     {
       "nombre": "Makemake",

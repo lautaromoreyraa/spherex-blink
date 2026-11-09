@@ -17,6 +17,7 @@ from jsonschema import Draft202012Validator
 from contrato.campo import Campo
 from contrato.indice import Indice
 from core.epocas import pasada_de
+from core.estiramiento import PARAMETRO_ASINH
 from core.rejilla import rejilla_norte_arriba
 
 RAIZ = Path(__file__).resolve().parents[2]
@@ -173,6 +174,16 @@ def test_las_epocas_de_cada_campo_comparten_el_estiramiento() -> None:
     for campo in _campos():
         assert campo.estiramiento.tipo == "asinh"
         assert campo.estiramiento.maximo > campo.estiramiento.minimo
+        assert campo.estiramiento.parametro_asinh == PARAMETRO_ASINH
+
+
+def test_el_visor_puede_volver_a_mjy_sr_en_la_diferencia_y_ver_el_rastro() -> None:
+    # RF-37: sin el límite de la diferencia el visor no puede rotular su escala.
+    for campo in _campos():
+        assert campo.escala_diferencia is not None, campo.id
+        assert campo.escala_diferencia.tipo == "lineal-simetrica"
+        assert campo.escala_diferencia.limite > 0
+        assert campo.rastro is not None, campo.id
 
 
 @pytest.mark.red
