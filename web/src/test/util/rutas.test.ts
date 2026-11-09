@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { direccion, rutaDe, rutaDeDatos } from '../../util/rutas.ts'
+import { direccion, llegadaDesdeLaEscena, rutaDe, rutaDeDatos } from '../../util/rutas.ts'
+
+describe('llegadaDesdeLaEscena', () => {
+  it('lee el estado que deja el vuelo (RF-36)', () => {
+    expect(llegadaDesdeLaEscena({ desdeLaEscena: true, epoca: 'p3-x' })).toEqual({
+      desdeLaEscena: true,
+      epoca: 'p3-x',
+    })
+  })
+
+  it.each([null, undefined, 'x', {}, { desdeLaEscena: true }, { desdeLaEscena: 'si', epoca: 'a' }])(
+    'ignora %j',
+    (estado) => {
+      expect(llegadaDesdeLaEscena(estado)).toBeNull()
+    },
+  )
+})
 
 describe('páginas del sitio', () => {
   it('reconoce inicio, campo y límites, con o sin barra final', () => {
@@ -26,6 +42,25 @@ describe('páginas del sitio', () => {
       id: 'makemake',
     })
     expect(() => direccion({ pagina: 'campo', id: '../x' }, '/')).toThrow()
+  })
+})
+
+describe('escena del Sistema Solar', () => {
+  it('reconoce /escena y /escena/<id> (RF-34)', () => {
+    expect(rutaDe('/escena', '/')).toEqual({ pagina: 'escena', id: null })
+    expect(rutaDe('/escena/makemake/', '/')).toEqual({ pagina: 'escena', id: 'makemake' })
+    expect(rutaDe('/escena/Makemake', '/')).toEqual({ pagina: 'no-encontrada' })
+    expect(rutaDe('/escena/a/b', '/')).toEqual({ pagina: 'no-encontrada' })
+  })
+
+  it('arma la dirección de ida y vuelta', () => {
+    expect(direccion({ pagina: 'escena', id: null }, '/')).toBe('/escena')
+    expect(direccion({ pagina: 'escena', id: 'makemake' }, '/demo')).toBe('/demo/escena/makemake')
+    expect(rutaDe(direccion({ pagina: 'escena', id: 'makemake' }, '/'), '/')).toEqual({
+      pagina: 'escena',
+      id: 'makemake',
+    })
+    expect(() => direccion({ pagina: 'escena', id: '../x' }, '/')).toThrow()
   })
 })
 

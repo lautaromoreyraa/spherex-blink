@@ -10,7 +10,7 @@ import { rutaDe, type Ruta } from '../util/rutas.ts'
  * `vite preview` sirven index.html para cualquier ruta, así que un enlace
  * directo a /campo/<id> también abre.
  */
-export function useRutaActual(): { ruta: Ruta; navegar: (href: string) => void } {
+export function useRutaActual(): { ruta: Ruta; navegar: ContextoDeNavegacion['navegar'] } {
   const [ruta, setRuta] = useState<Ruta>(() => rutaDe(window.location.pathname))
 
   useEffect(() => {
@@ -19,13 +19,13 @@ export function useRutaActual(): { ruta: Ruta; navegar: (href: string) => void }
     return () => window.removeEventListener('popstate', alVolver)
   }, [])
 
-  const navegar = useCallback((href: string) => {
+  const navegar = useCallback((href: string, estado: unknown = null) => {
     const destino = new URL(href, window.location.href)
     if (destino.origin !== window.location.origin) {
       window.location.assign(destino.href)
       return
     }
-    window.history.pushState(null, '', destino.pathname + destino.search + destino.hash)
+    window.history.pushState(estado, '', destino.pathname + destino.search + destino.hash)
     setRuta(rutaDe(destino.pathname))
     window.scrollTo({ top: 0 })
   }, [])

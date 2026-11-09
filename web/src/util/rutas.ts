@@ -23,6 +23,8 @@ export type Ruta =
   | { pagina: 'inicio' }
   | { pagina: 'campo'; id: string }
   | { pagina: 'limites' }
+  /** La escena 3D (RF-34); sin id abre la del campo por defecto. */
+  | { pagina: 'escena'; id: string | null }
   | { pagina: 'no-encontrada' }
 
 const ID_DE_CAMPO = /^[a-z0-9]+(-[a-z0-9]+)*$/
@@ -43,6 +45,10 @@ export function direccion(ruta: Ruta, base: string = import.meta.env.BASE_URL): 
       return `${prefijo}campo/${ruta.id}`
     case 'limites':
       return `${prefijo}limites`
+    case 'escena':
+      if (ruta.id === null) return `${prefijo}escena`
+      if (!ID_DE_CAMPO.test(ruta.id)) throw new Error(`Id de campo inválido: «${ruta.id}»`)
+      return `${prefijo}escena/${ruta.id}`
   }
 }
 
@@ -54,14 +60,32 @@ export function rutaDe(pathname: string, base: string = import.meta.env.BASE_URL
   const partes = conBarra.slice(prefijo.length).split('/').filter(Boolean)
   if (partes.length === 0) return { pagina: 'inicio' }
   if (partes.length === 1 && partes[0] === 'limites') return { pagina: 'limites' }
-  if (partes.length === 2 && partes[0] === 'campo') {
+  if (partes.length === 1 && partes[0] === 'escena') return { pagina: 'escena', id: null }
+  if (partes.length === 2 && (partes[0] === 'campo' || partes[0] === 'escena')) {
     let id = partes[1]!
     try {
       id = decodeURIComponent(id)
     } catch {
       return { pagina: 'no-encontrada' }
     }
-    if (ID_DE_CAMPO.test(id)) return { pagina: 'campo', id }
+    if (ID_DE_CAMPO.test(id)) {
+      return partes[0] === 'campo' ? { pagina: 'campo', id } : { pagina: 'escena', id }
+    }
   }
   return { pagina: 'no-encontrada' }
+}
+
+/**
+ * Lo que el vuelo de la escena le deja al visor en `history.state` (RF-36):
+ * con qué época abrir y que tiene que tomar el foco al aparecer.
+ */
+export interface LlegadaDesdeLaEscena {
+  desdeLaEscena: true
+  epoca: string
+}
+
+export function llegadaDesdeLaEscena(estado: unknown): LlegadaDesdeLaEscena | null {
+  if (typeof estado !== 'object' || estado === null) return null
+  const { desdeLaEscena, epoca } = estado as Record<string, unknown>
+  return desdeLaEscena === true && typeof epoca === 'string' ? { desdeLaEscena, epoca } : null
 }
