@@ -18,6 +18,14 @@ dependencies = [
     "fastapi==0.162.2",
     "uvicorn==0.54.0",
     "jsonschema==4.26.0",
+    # Datos (core/ y pipeline/)
+    "numpy==2.5.4",
+    "scipy==1.18.1",
+    "astropy==8.0.2",
+    "reproject==0.21.0",
+    "photutils==3.1.1",
+    "Pillow==13.0.0",
+    "httpx2==2.16.0",
 ]
 
 [project.optional-dependencies]
@@ -25,7 +33,6 @@ dev = [
     "pytest==9.2.0",
     "ruff==0.17.4",
     "mypy==2.4.1",
-    "httpx2==2.16.0",
     "types-jsonschema==4.26.0.20261006",
 ]
 
@@ -53,11 +60,17 @@ plugins = ["pydantic.mypy"]
 files = ["core", "pipeline", "api", "contrato", "tests"]
 explicit_package_bases = true
 
+# astropy, reproject y photutils no publican tipos: se usan detrás de funciones
+# propias tipadas (core/rejilla.py, core/medicion.py).
+[[tool.mypy.overrides]]
+module = ["astropy", "astropy.*", "erfa", "reproject", "reproject.*", "photutils", "photutils.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # importlib permite archivos de test con el mismo nombre en distintas
 # carpetas sin agregar __init__.py a tests/.
 addopts = ["--import-mode=importlib", "-m", "not red", "--strict-markers"]
 markers = [
-    "red: pega a servicios reales (IRSA, SkyBoT, SIMBAD); fuera de la corrida por defecto y de la CI",
+    "red: pega a servicios reales (IRSA, SkyBoT, SIMBAD, Horizons); fuera de la corrida por defecto y de la CI",
 ]

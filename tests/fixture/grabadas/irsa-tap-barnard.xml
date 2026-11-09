@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VOTABLE version="1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:stc="http://www.ivoa.net/xml/STC/v1.30" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/STC/v1.30 http://www.ivoa.net/xml/STC/v1.30">
+  <RESOURCE type="results">
+    <INFO name="QUERY_STATUS" value="OK"/>
+    <TABLE>
+      <FIELD name="planeid" datatype="char" arraysize="*" ID="col_0" utype="caom2:Plane.id">
+        <DESCRIPTION>unique plane identifier: 32-bit UUID</DESCRIPTION>
+      </FIELD>
+      <FIELD name="uri" datatype="char" arraysize="*" ID="col_1" utype="caom2:Artifact.uri">
+        <DESCRIPTION>artifact access url</DESCRIPTION>
+      </FIELD>
+      <FIELD name="time_bounds_lower" datatype="double" ID="col_2" irsa_format="12.6f" precision="F6" unit="d" utype="caom2:Plane.time.bounds.lower">
+        <DESCRIPTION>lower bound on time axis (Modified Julian Day)</DESCRIPTION>
+      </FIELD>
+      <FIELD name="energy_bandpassname" datatype="char" arraysize="*" ID="col_3" utype="caom2:Plane.energy.bandpassName">
+        <DESCRIPTION>collection-specific name for energy band (e.g. filter name)</DESCRIPTION>
+      </FIELD>
+      <FIELD name="provenance_version" datatype="char" arraysize="*" ID="col_4" utype="caom2:Plane.provenance.version">
+        <DESCRIPTION>version of the process/software</DESCRIPTION>
+      </FIELD>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>019d59f1-ed4a-7be0-8436-ebb09cd2181f</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0511_1D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.433058</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-e5ab-76f3-b7e4-86012f48ce3c</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0511_1D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.433058</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-ebbb-70c8-9283-48d12e172c5a</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0511_2D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.434550</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59bf-62f0-763a-8a6d-bba205e84996</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0511_2D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.434550</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-f2f1-772b-afd7-b08604685367</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0511_3D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.436043</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-f1fe-7390-bcdc-32bcee68affa</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0511_3D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.436043</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-f159-704a-a892-b6a82db121c9</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0511_4D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.437535</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-e9bd-7816-bceb-ffca1b89131f</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0511_4D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.437535</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-f1d8-7a14-be67-1d4b3d82ccab</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0539_1D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.565087</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-ea3d-7086-9613-3f8767b2185b</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0539_1D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.565087</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-e999-7a55-9715-29df41e72f6d</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0539_2D1_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.566579</TD>
+            <TD>SPHEREx-D1</TD>
+            <TD>6.5.6</TD>
+          </TR>
+          <TR>
+            <TD>019d59f1-e8c5-7f02-bb19-a4a3fd92f082</TD>
+            <TD>ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/4/level2_2026W11_1A_0539_2D4_spx_l2b-v24-2026-094.fits</TD>
+            <TD>61110.566579</TD>
+            <TD>SPHEREx-D4</TD>
+            <TD>6.5.6</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
