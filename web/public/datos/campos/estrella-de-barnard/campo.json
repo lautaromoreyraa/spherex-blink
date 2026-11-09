@@ -1,0 +1,1234 @@
+{
+  "id": "estrella-de-barnard",
+  "nombre": {
+    "es": "Estrella de Barnard",
+    "en": "Barnard's Star"
+  },
+  "descripcion": {
+    "es": "La estrella con el movimiento propio más rápido del cielo: 10,4″ por año. Entre las pasadas de SPHEREx se corre casi dos píxeles mientras las demás estrellas quedan quietas.",
+    "en": "The star with the fastest proper motion in the sky: 10.4″ per year. Between SPHEREx passes it shifts almost two pixels while the other stars stay put."
+  },
+  "centro": {
+    "ra": 269.446259,
+    "dec": 4.768324
+  },
+  "tamano_grados": 0.15,
+  "detector": "D1",
+  "rejilla": {
+    "ancho_px": 88,
+    "alto_px": 88,
+    "escala_arcsec_px": 6.15,
+    "wcs": {
+      "CDELT1": -0.001708333333,
+      "CDELT2": 0.001708333333,
+      "CRPIX1": 44.5,
+      "CRPIX2": 44.5,
+      "CRVAL1": 269.446259,
+      "CRVAL2": 4.768324,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CUNIT1": "deg",
+      "CUNIT2": "deg",
+      "LATPOLE": 4.768324,
+      "LONPOLE": 180.0,
+      "MJDREF": 0.0,
+      "NAXIS1": 88,
+      "NAXIS2": 88,
+      "RADESYS": "ICRS",
+      "WCSAXES": 2
+    }
+  },
+  "estiramiento": {
+    "tipo": "asinh",
+    "minimo": -1.290865,
+    "maximo": 10.325259
+  },
+  "epocas": [
+    {
+      "id": "p1-20250827-050602",
+      "mjd": 60914.21253,
+      "fecha_utc": "2025-08-27T05:06:02Z",
+      "pasada": 1,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2025W35_1A/l2b-v20-2025-269/1/level2_2025W35_1A_0432_4D1_spx_l2b-v20-2025-269.fits",
+        "planeid": "029924d3-40fb-48d9-9fb9-f9a40e8b540b",
+        "version_proceso": "6.4"
+      },
+      "longitud_onda_um": 0.7503,
+      "fraccion_mala": 0.0056,
+      "imagen": "campos/estrella-de-barnard/p1-20250827-050602.webp",
+      "diferencia": "campos/estrella-de-barnard/p1-20250827-050602-diferencia.webp"
+    },
+    {
+      "id": "p1-20250905-023422",
+      "mjd": 60923.107203,
+      "fecha_utc": "2025-09-05T02:34:22Z",
+      "pasada": 1,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2025W36_2B/l2b-v20-2025-271/1/level2_2025W36_2B_0123_1D1_spx_l2b-v20-2025-271.fits",
+        "planeid": "2fb59e5f-bb73-40f9-b634-bfdb729eea6a",
+        "version_proceso": "6.4"
+      },
+      "longitud_onda_um": 0.9038,
+      "fraccion_mala": 0.0081,
+      "imagen": "campos/estrella-de-barnard/p1-20250905-023422.webp",
+      "diferencia": "campos/estrella-de-barnard/p1-20250905-023422-diferencia.webp"
+    },
+    {
+      "id": "p1-20251001-062254",
+      "mjd": 60949.265914,
+      "fecha_utc": "2025-10-01T06:22:54Z",
+      "pasada": 1,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2025W40_1A/l2b-v20-2025-277/1/level2_2025W40_1A_0500_1D1_spx_l2b-v20-2025-277.fits",
+        "planeid": "0aa96f20-6f4f-466b-a472-c02cb4d4c579",
+        "version_proceso": "6.4"
+      },
+      "longitud_onda_um": 1.0563,
+      "fraccion_mala": 0.0113,
+      "imagen": "campos/estrella-de-barnard/p1-20251001-062254.webp",
+      "diferencia": "campos/estrella-de-barnard/p1-20251001-062254-diferencia.webp"
+    },
+    {
+      "id": "p2-20260311-021137",
+      "mjd": 61110.091403,
+      "fecha_utc": "2026-03-11T02:11:37Z",
+      "pasada": 2,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0430_2D1_spx_l2b-v24-2026-094.fits",
+        "planeid": "019d59f1-ef6e-788f-9c90-44f13ab36d14",
+        "version_proceso": "6.5.6"
+      },
+      "longitud_onda_um": 0.7468,
+      "fraccion_mala": 0.0061,
+      "imagen": "campos/estrella-de-barnard/p2-20260311-021137.webp",
+      "diferencia": "campos/estrella-de-barnard/p2-20260311-021137-diferencia.webp"
+    },
+    {
+      "id": "p2-20260311-133343",
+      "mjd": 61110.565087,
+      "fecha_utc": "2026-03-11T13:33:43Z",
+      "pasada": 2,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0539_1D1_spx_l2b-v24-2026-094.fits",
+        "planeid": "019d59f1-f1d8-7a14-be67-1d4b3d82ccab",
+        "version_proceso": "6.5.6"
+      },
+      "longitud_onda_um": 0.904,
+      "fraccion_mala": 0.008,
+      "imagen": "campos/estrella-de-barnard/p2-20260311-133343.webp",
+      "diferencia": "campos/estrella-de-barnard/p2-20260311-133343-diferencia.webp"
+    },
+    {
+      "id": "p2-20260311-182920",
+      "mjd": 61110.770379,
+      "fecha_utc": "2026-03-11T18:29:20Z",
+      "pasada": 2,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr2/level2/2026W11_1A/l2b-v24-2026-094/1/level2_2026W11_1A_0587_1D1_spx_l2b-v24-2026-094.fits",
+        "planeid": "019d59f1-ee85-7193-9690-dbefcbc2bc51",
+        "version_proceso": "6.5.6"
+      },
+      "longitud_onda_um": 1.0918,
+      "fraccion_mala": 0.0067,
+      "imagen": "campos/estrella-de-barnard/p2-20260311-182920.webp",
+      "diferencia": "campos/estrella-de-barnard/p2-20260311-182920-diferencia.webp"
+    },
+    {
+      "id": "p3-20260823-230113",
+      "mjd": 61275.959186,
+      "fecha_utc": "2026-08-23T23:01:13Z",
+      "pasada": 3,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W34_2A/l2b-v27-2026-243/1/level2_2026W34_2A_0757_1D1_spx_l2b-v27-2026-243.fits",
+        "planeid": "01a0eef0-0a82-79e0-9897-456a13e1bfcf",
+        "version_proceso": "7.0.5"
+      },
+      "longitud_onda_um": 0.7756,
+      "fraccion_mala": 0.0052,
+      "imagen": "campos/estrella-de-barnard/p3-20260823-230113.webp",
+      "diferencia": "campos/estrella-de-barnard/p3-20260823-230113-diferencia.webp"
+    },
+    {
+      "id": "p3-20260825-060227",
+      "mjd": 61277.25171,
+      "fecha_utc": "2026-08-25T06:02:27Z",
+      "pasada": 3,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W35_1A/l2b-v27-2026-243/1/level2_2026W35_1A_0249_4D1_spx_l2b-v27-2026-243.fits",
+        "planeid": "01a0ef3b-c5b1-7e65-a550-cedc83465bf7",
+        "version_proceso": "7.0.5"
+      },
+      "longitud_onda_um": 0.7441,
+      "fraccion_mala": 0.0061,
+      "imagen": "campos/estrella-de-barnard/p3-20260825-060227.webp",
+      "diferencia": "campos/estrella-de-barnard/p3-20260825-060227-diferencia.webp"
+    },
+    {
+      "id": "p3-20260902-061007",
+      "mjd": 61285.257036,
+      "fecha_utc": "2026-09-02T06:10:07Z",
+      "pasada": 3,
+      "fuente": {
+        "uri": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W36_1A/l2b-v27-2026-252/1/level2_2026W36_1A_0510_1D1_spx_l2b-v27-2026-252.fits",
+        "planeid": "01a0efea-1d32-7a2a-b30a-ec30c5eb632b",
+        "version_proceso": "7.0.5"
+      },
+      "longitud_onda_um": 0.7585,
+      "fraccion_mala": 0.0057,
+      "imagen": "campos/estrella-de-barnard/p3-20260902-061007.webp",
+      "diferencia": "campos/estrella-de-barnard/p3-20260902-061007-diferencia.webp"
+    }
+  ],
+  "referencia": "campos/estrella-de-barnard/referencia.webp",
+  "rastro": null,
+  "conocidos": [
+    {
+      "nombre": "Estrella de Barnard",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.4463364,
+          "dec": 4.7673221,
+          "x": 43.455,
+          "y": 44.086,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.4463309,
+          "dec": 4.7673924,
+          "x": 43.458,
+          "y": 44.045,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.4463149,
+          "dec": 4.7675992,
+          "x": 43.467,
+          "y": 43.924,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.4462162,
+          "dec": 4.7688707,
+          "x": 43.525,
+          "y": 43.18,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.4462159,
+          "dec": 4.7688745,
+          "x": 43.525,
+          "y": 43.178,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.4462157,
+          "dec": 4.7688761,
+          "x": 43.525,
+          "y": 43.177,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.4461143,
+          "dec": 4.7701822,
+          "x": 43.584,
+          "y": 42.412,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.4461136,
+          "dec": 4.7701924,
+          "x": 43.585,
+          "y": 42.406,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.4461086,
+          "dec": 4.7702557,
+          "x": 43.588,
+          "y": 42.369,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [],
+      "fuente": "SIMBAD",
+      "consultado_en": "2026-11-09T02:11:29.296806Z",
+      "magnitud": {
+        "valor": 5.24399995803833,
+        "banda": "J"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472832165289153024",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.4664622,
+          "dec": 4.7055496,
+          "x": 31.714,
+          "y": 80.246,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.4664622,
+          "dec": 4.7055495,
+          "x": 31.714,
+          "y": 80.246,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.4664623,
+          "dec": 4.7055493,
+          "x": 31.714,
+          "y": 80.246,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.4664623,
+          "dec": 4.7055483,
+          "x": 31.714,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.4664623,
+          "dec": 4.7055483,
+          "x": 31.714,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.4664623,
+          "dec": 4.7055483,
+          "x": 31.714,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.4664624,
+          "dec": 4.7055472,
+          "x": 31.713,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.4664624,
+          "dec": 4.7055472,
+          "x": 31.713,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.4664624,
+          "dec": 4.7055471,
+          "x": 31.713,
+          "y": 80.247,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 31.662,
+          "y": 80.181,
+          "snr": 1556.53,
+          "distancia_px": 0.083
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 31.792,
+          "y": 80.303,
+          "snr": 1535.96,
+          "distancia_px": 0.096
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 31.869,
+          "y": 80.115,
+          "snr": 1008.83,
+          "distancia_px": 0.203
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 31.882,
+          "y": 80.24,
+          "snr": 1773.59,
+          "distancia_px": 0.168
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "x": 31.618,
+          "y": 80.155,
+          "snr": 1194.25,
+          "distancia_px": 0.133
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "x": 31.87,
+          "y": 80.063,
+          "snr": 417.9,
+          "distancia_px": 0.241
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 31.721,
+          "y": 80.098,
+          "snr": 1297.28,
+          "distancia_px": 0.149
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 31.897,
+          "y": 80.251,
+          "snr": 1614.28,
+          "distancia_px": 0.184
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 11.451173782348633,
+        "banda": "G"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472836292758713216",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.443855,
+          "dec": 4.7962928,
+          "x": 44.902,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.443855,
+          "dec": 4.7962928,
+          "x": 44.902,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.4438549,
+          "dec": 4.7962928,
+          "x": 44.902,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.4438541,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.4438541,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.4438541,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.4438533,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.4438533,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.4438533,
+          "dec": 4.7962929,
+          "x": 44.903,
+          "y": 27.128,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 44.92,
+          "y": 27.174,
+          "snr": 574.34,
+          "distancia_px": 0.049
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 44.932,
+          "y": 27.039,
+          "snr": 457.54,
+          "distancia_px": 0.094
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 44.934,
+          "y": 27.04,
+          "snr": 365.42,
+          "distancia_px": 0.094
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 44.957,
+          "y": 27.047,
+          "snr": 494.69,
+          "distancia_px": 0.098
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 44.934,
+          "y": 27.149,
+          "snr": 486.61,
+          "distancia_px": 0.037
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "x": 44.957,
+          "y": 27.206,
+          "snr": 414.19,
+          "distancia_px": 0.095
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 44.981,
+          "y": 27.036,
+          "snr": 478.08,
+          "distancia_px": 0.12
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 11.862573623657227,
+        "banda": "G"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472835807421415680",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.3921354,
+          "dec": 4.7721466,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.3921354,
+          "dec": 4.7721465,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.3921355,
+          "dec": 4.7721465,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.3921359,
+          "dec": 4.7721463,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.3921359,
+          "dec": 4.7721463,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.3921359,
+          "dec": 4.7721463,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.3921363,
+          "dec": 4.7721461,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.3921363,
+          "dec": 4.7721461,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.3921363,
+          "dec": 4.7721461,
+          "x": 75.072,
+          "y": 41.261,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 75.087,
+          "y": 41.359,
+          "snr": 364.87,
+          "distancia_px": 0.099
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 75.088,
+          "y": 41.209,
+          "snr": 381.47,
+          "distancia_px": 0.054
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 75.042,
+          "y": 41.335,
+          "snr": 289.96,
+          "distancia_px": 0.08
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 75.079,
+          "y": 41.228,
+          "snr": 474.85,
+          "distancia_px": 0.033
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "x": 75.009,
+          "y": 41.089,
+          "snr": 375.01,
+          "distancia_px": 0.183
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "x": 75.042,
+          "y": 41.084,
+          "snr": 293.47,
+          "distancia_px": 0.18
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 75.095,
+          "y": 41.329,
+          "snr": 365.86,
+          "distancia_px": 0.071
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "x": 75.089,
+          "y": 41.389,
+          "snr": 376.18,
+          "distancia_px": 0.129
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 75.028,
+          "y": 41.076,
+          "snr": 395.75,
+          "distancia_px": 0.19
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 12.034628868103027,
+        "banda": "G"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472837770227461504",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.4570407,
+          "dec": 4.811092,
+          "x": 37.211,
+          "y": 18.465,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.4570407,
+          "dec": 4.811092,
+          "x": 37.211,
+          "y": 18.465,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.4570407,
+          "dec": 4.8110918,
+          "x": 37.211,
+          "y": 18.465,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.4570409,
+          "dec": 4.8110909,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.4570409,
+          "dec": 4.8110909,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.4570409,
+          "dec": 4.8110909,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.457041,
+          "dec": 4.8110899,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.457041,
+          "dec": 4.8110899,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.4570411,
+          "dec": 4.8110899,
+          "x": 37.211,
+          "y": 18.466,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 37.184,
+          "y": 18.221,
+          "snr": 370.05,
+          "distancia_px": 0.245
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 37.286,
+          "y": 18.7,
+          "snr": 513.81,
+          "distancia_px": 0.247
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 37.228,
+          "y": 18.696,
+          "snr": 439.34,
+          "distancia_px": 0.231
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 37.079,
+          "y": 18.224,
+          "snr": 386.88,
+          "distancia_px": 0.276
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "x": 37.242,
+          "y": 18.211,
+          "snr": 503.51,
+          "distancia_px": 0.257
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "x": 37.054,
+          "y": 18.194,
+          "snr": 401.27,
+          "distancia_px": 0.315
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 37.148,
+          "y": 18.211,
+          "snr": 369.61,
+          "distancia_px": 0.262
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "x": 37.11,
+          "y": 18.232,
+          "snr": 392.58,
+          "distancia_px": 0.255
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 37.092,
+          "y": 18.73,
+          "snr": 508.03,
+          "distancia_px": 0.289
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 12.653553009033203,
+        "banda": "G"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472832508888391168",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.4202784,
+          "dec": 4.7316075,
+          "x": 58.656,
+          "y": 64.992,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.4202783,
+          "dec": 4.7316074,
+          "x": 58.656,
+          "y": 64.992,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.4202781,
+          "dec": 4.7316074,
+          "x": 58.656,
+          "y": 64.992,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.420277,
+          "dec": 4.7316072,
+          "x": 58.657,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.420277,
+          "dec": 4.7316072,
+          "x": 58.657,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.420277,
+          "dec": 4.7316072,
+          "x": 58.657,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.4202759,
+          "dec": 4.7316069,
+          "x": 58.658,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.4202759,
+          "dec": 4.7316069,
+          "x": 58.658,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.4202758,
+          "dec": 4.7316069,
+          "x": 58.658,
+          "y": 64.993,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 58.636,
+          "y": 65.014,
+          "snr": 521.92,
+          "distancia_px": 0.03
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 58.782,
+          "y": 65.041,
+          "snr": 595.55,
+          "distancia_px": 0.136
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 58.888,
+          "y": 64.977,
+          "snr": 447.65,
+          "distancia_px": 0.233
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 58.79,
+          "y": 64.983,
+          "snr": 439.88,
+          "distancia_px": 0.134
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "x": 58.448,
+          "y": 64.964,
+          "snr": 561.3,
+          "distancia_px": 0.211
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "x": 58.835,
+          "y": 65.036,
+          "snr": 132.59,
+          "distancia_px": 0.183
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 58.458,
+          "y": 65.002,
+          "snr": 608.74,
+          "distancia_px": 0.201
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "x": 58.564,
+          "y": 65.042,
+          "snr": 562.82,
+          "distancia_px": 0.107
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 58.869,
+          "y": 64.971,
+          "snr": 483.91,
+          "distancia_px": 0.212
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 13.028433799743652,
+        "banda": "G"
+      }
+    },
+    {
+      "nombre": "Gaia DR3 4472835807421416064",
+      "tipo": "estrella",
+      "posiciones": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "ra": 269.3885449,
+          "dec": 4.7677214,
+          "x": 77.167,
+          "y": 43.851,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "ra": 269.3885448,
+          "dec": 4.7677213,
+          "x": 77.167,
+          "y": 43.851,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "ra": 269.3885444,
+          "dec": 4.7677209,
+          "x": 77.167,
+          "y": 43.852,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "ra": 269.3885424,
+          "dec": 4.7677186,
+          "x": 77.168,
+          "y": 43.853,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "ra": 269.3885424,
+          "dec": 4.7677186,
+          "x": 77.168,
+          "y": 43.853,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "ra": 269.3885424,
+          "dec": 4.7677186,
+          "x": 77.168,
+          "y": 43.853,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "ra": 269.3885402,
+          "dec": 4.7677162,
+          "x": 77.17,
+          "y": 43.854,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "ra": 269.3885402,
+          "dec": 4.7677161,
+          "x": 77.17,
+          "y": 43.854,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "ra": 269.3885401,
+          "dec": 4.767716,
+          "x": 77.17,
+          "y": 43.854,
+          "dentro_del_campo": true,
+          "distancia_ua": null
+        }
+      ],
+      "deteccion": [
+        {
+          "epoca_id": "p1-20250827-050602",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 260.43,
+          "distancia_px": 0.224
+        },
+        {
+          "epoca_id": "p1-20250905-023422",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 195.09,
+          "distancia_px": 0.224
+        },
+        {
+          "epoca_id": "p1-20251001-062254",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 183.16,
+          "distancia_px": 0.223
+        },
+        {
+          "epoca_id": "p2-20260311-021137",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 203.95,
+          "distancia_px": 0.223
+        },
+        {
+          "epoca_id": "p2-20260311-133343",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 255.57,
+          "distancia_px": 0.223
+        },
+        {
+          "epoca_id": "p2-20260311-182920",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 114.71,
+          "distancia_px": 0.223
+        },
+        {
+          "epoca_id": "p3-20260823-230113",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 200.32,
+          "distancia_px": 0.224
+        },
+        {
+          "epoca_id": "p3-20260825-060227",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 221.6,
+          "distancia_px": 0.224
+        },
+        {
+          "epoca_id": "p3-20260902-061007",
+          "x": 77.0,
+          "y": 44.0,
+          "snr": 276.07,
+          "distancia_px": 0.224
+        }
+      ],
+      "fuente": "Gaia DR3",
+      "consultado_en": "2026-11-09T02:12:07.293265Z",
+      "magnitud": {
+        "valor": 13.097588539123535,
+        "banda": "G"
+      }
+    }
+  ],
+  "candidatos": [],
+  "geometria": null,
+  "limites": null,
+  "avisos": [
+    {
+      "es": "A cada época se le restó su fondo mediano: la luz zodiacal cambia con la fecha.",
+      "en": "Each epoch had its median background subtracted: zodiacal light changes with date."
+    },
+    {
+      "es": "La longitud de onda central cambia entre épocas (0,744 a 1,092 µm): parte de lo que muestra la diferencia es color, no movimiento.",
+      "en": "The central wavelength changes between epochs (0.744 to 1.092 µm): part of the difference image is colour, not motion."
+    },
+    {
+      "es": "Estrella de Barnard satura el detector: su núcleo queda enmascarado y no se mide su posición; el marcador es la del catálogo.",
+      "en": "Estrella de Barnard saturates the detector: its core is masked and its position is not measured; the marker is the catalogue position."
+    },
+    {
+      "es": "Entre la primera y la última época la estrella se corre 1,7 px (10,6″): SPHEREx todavía no tiene imágenes de este punto separadas más de un año.",
+      "en": "Between the first and last epochs the star moves 1.7 px (10.6″): SPHEREx does not yet have images of this spot more than a year apart."
+    }
+  ],
+  "creditos": "Imágenes: SPHEREx (NASA/JPL-Caltech), NASA/IPAC Infrared Science Archive (IRSA). Estrellas: base de datos SIMBAD, CDS, Estrasburgo; Gaia DR3 (ESA/DPAC), servido por IRSA. Efemérides: NASA/JPL Horizons (Giorgini y Solar System Dynamics Group).",
+  "procedencia": {
+    "version_pipeline": "0.1.0",
+    "irsa_consultado_en": "2026-11-09T02:11:34.214921Z"
+  }
+}

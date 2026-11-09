@@ -1,0 +1,38 @@
+{
+  "version_contrato": "0.2.0",
+  "generado_en": "2026-11-09T02:21:41Z",
+  "campos": [
+    {
+      "id": "estrella-de-barnard",
+      "nombre": {
+        "es": "Estrella de Barnard",
+        "en": "Barnard's Star"
+      },
+      "centro": {
+        "ra": 269.446259,
+        "dec": 4.768324
+      },
+      "tamano_grados": 0.15,
+      "detector": "D1",
+      "cantidad_epocas": 9,
+      "objeto_destacado": "Estrella de Barnard",
+      "miniatura": "campos/estrella-de-barnard/miniatura.webp"
+    },
+    {
+      "id": "makemake",
+      "nombre": {
+        "es": "Makemake",
+        "en": "Makemake"
+      },
+      "centro": {
+        "ra": 200.684923,
+        "dec": 20.977056
+      },
+      "tamano_grados": 0.15,
+      "detector": "D1",
+      "cantidad_epocas": 9,
+      "objeto_destacado": "Makemake",
+      "miniatura": "campos/makemake/miniatura.webp"
+    }
+  ]
+}
