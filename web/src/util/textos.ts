@@ -86,7 +86,7 @@ const es = {
   'control.velocidad': 'Velocidad',
   'control.velocidadValor': '{n} cambios por segundo',
   'control.avisoDestellos':
-    'El parpadeo alterna imágenes hasta 3 veces por segundo, nunca más rápido. Si los destellos te molestan, pausá y pasá de a una época.',
+    'El parpadeo alterna imágenes hasta 2,5 veces por segundo, nunca más rápido. Si los destellos te molestan, pausá y pasá de a una época.',
 
   'seleccion.titulo': 'Épocas que entran en el parpadeo',
   'seleccion.pasada': 'Pasada {n} ({k} épocas)',
@@ -273,7 +273,7 @@ const en: Record<Clave, string> = {
   'control.velocidad': 'Speed',
   'control.velocidadValor': '{n} changes per second',
   'control.avisoDestellos':
-    'The blink switches images up to 3 times per second, never faster. If flashing bothers you, pause and step one epoch at a time.',
+    'The blink switches images up to 2.5 times per second, never faster. If flashing bothers you, pause and step one epoch at a time.',
 
   'seleccion.titulo': 'Epochs included in the blink',
   'seleccion.pasada': 'Pass {n} ({k} epochs)',

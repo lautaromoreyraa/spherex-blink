@@ -1,23 +1,30 @@
 /**
  * Reglas del parpadeo (RF-11, RNF-04).
  *
- * El tope de 3 cambios por segundo viene de WCAG 2.3.1 («tres destellos o
- * menos»): el temporizador nunca pide un intervalo menor, aunque la interfaz
- * le pase otra velocidad.
+ * WCAG 2.3.1 pide tres destellos o menos por segundo. El tope queda en 2,5
+ * cambios por segundo (400 ms entre cuadros) y no en 3: setInterval tiene
+ * jitter, y con 334 ms se midieron huecos de 322 ms, así que en algún
+ * segundo suelto entraban 4 cambios. Con 400 ms hace falta un retraso de
+ * más de 65 ms acumulado en contra para que entren 4, y el navegador atrasa,
+ * no adelanta. El temporizador nunca pide menos, aunque la interfaz le pase
+ * otra velocidad.
  */
 import type { Epoca } from '../api/tipos.ts'
 
-export const CAMBIOS_POR_SEGUNDO_MAXIMO = 3
+export const CAMBIOS_POR_SEGUNDO_MAXIMO = 2.5
+
+/** Intervalo mínimo entre cuadros del parpadeo, en ms. */
+export const INTERVALO_MINIMO_MS = 400
 export const CAMBIOS_POR_SEGUNDO_MINIMO = 0.5
 export const CAMBIOS_POR_SEGUNDO_INICIAL = 1.5
 
-/** Milisegundos entre cuadros, nunca por debajo de 1000 / 3. */
+/** Milisegundos entre cuadros, nunca por debajo de INTERVALO_MINIMO_MS. */
 export function intervaloSeguro(cambiosPorSegundo: number): number {
   const pedido = Number.isFinite(cambiosPorSegundo)
     ? cambiosPorSegundo
     : CAMBIOS_POR_SEGUNDO_INICIAL
   const acotado = Math.min(CAMBIOS_POR_SEGUNDO_MAXIMO, Math.max(CAMBIOS_POR_SEGUNDO_MINIMO, pedido))
-  return Math.ceil(1000 / acotado)
+  return Math.max(INTERVALO_MINIMO_MS, Math.ceil(1000 / acotado))
 }
 
 /**

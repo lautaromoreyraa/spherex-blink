@@ -11,7 +11,7 @@ export function prefiereMovimientoReducido(): boolean {
 
 /**
  * Estado del visor de un campo con el temporizador del parpadeo. El
- * intervalo sale siempre de `intervaloSeguro`: nunca más de 3 cambios por
+ * intervalo sale siempre de `intervaloSeguro`: nunca más de 2,5 cambios por
  * segundo (RNF-04).
  */
 export function useEstadoDelVisor(campo: Campo, apertura: Apertura | null = null) {

@@ -44,7 +44,7 @@ describe('estado del visor', () => {
     expect(e.indice).toBe(2)
   })
 
-  it('la velocidad nunca pasa de 3 cambios por segundo', () => {
+  it('la velocidad nunca pasa de 2,5 cambios por segundo (RNF-04)', () => {
     const e = reducir(estadoInicial(campo, true), { tipo: 'velocidad', cambiosPorSegundo: 20 })
     expect(e.cambiosPorSegundo).toBe(CAMBIOS_POR_SEGUNDO_MAXIMO)
   })
