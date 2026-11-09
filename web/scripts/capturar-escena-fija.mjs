@@ -13,10 +13,18 @@ const salida = process.argv[3] ?? 'public/escena/escena-fija.jpg'
 
 const navegador = await chromium.launch({ args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'] })
 try {
-  const pagina = await navegador.newPage({ viewport: { width: 1280, height: 1100 }, deviceScaleFactor: 1 })
+  // bypassCSP deja agregar la hoja de abajo; la página en sí no cambia.
+  const pagina = await navegador.newPage({
+    viewport: { width: 1280, height: 1100 },
+    deviceScaleFactor: 1,
+    bypassCSP: true,
+  })
   await pagina.goto(`${base}/escena/makemake`, { waitUntil: 'networkidle' })
   const lienzo = pagina.locator('.escena__lienzo canvas')
   await lienzo.waitFor()
+  // En la imagen fija el rótulo del campo no es un botón: no se pinta, para
+  // que no invite a apretar algo que no responde.
+  await pagina.addStyleTag({ content: '.escena__rotulo--campo { visibility: hidden !important; }' })
   // Tiempo para que lleguen las texturas y se asiente la cámara.
   await pagina.waitForTimeout(2500)
   await pagina.locator('.escena__lienzo').screenshot({ path: salida, type: 'jpeg', quality: 82 })

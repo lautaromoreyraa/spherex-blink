@@ -16,7 +16,7 @@ export default function ImagenFijaDeLaEscena({
     <figure className="escena__fija">
       <img
         src={`${prefijo}escena/escena-fija.jpg`}
-        width={1248}
+        width={1204}
         height={771}
         alt="Captura de la escena del campo de Makemake: el Sol, las órbitas de los planetas y la órbita inclinada de Makemake, con la línea de visión desde la Tierra hacia el campo."
       />
