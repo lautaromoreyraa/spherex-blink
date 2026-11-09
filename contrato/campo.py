@@ -21,7 +21,7 @@ TipoDeEstiramiento = Literal["lineal", "asinh"]
 TipoDeObjetoConocido = Literal[
     "estrella", "asteroide", "cometa", "tno", "planeta-enano", "enana-marron"
 ]
-FuenteDeCatalogo = Literal["SkyBoT", "Horizons", "SIMBAD"]
+FuenteDeCatalogo = Literal["SkyBoT", "Horizons", "SIMBAD", "Gaia DR3"]
 EstadoDeIdentificacion = Literal["conocido", "sin-identificar"]
 
 ValorDeCabeceraFits = str | int | float | bool

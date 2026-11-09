@@ -426,7 +426,8 @@
           "enum": [
             "SkyBoT",
             "Horizons",
-            "SIMBAD"
+            "SIMBAD",
+            "Gaia DR3"
           ],
           "type": "string"
         },

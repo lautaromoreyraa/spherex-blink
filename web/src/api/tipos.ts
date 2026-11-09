@@ -191,7 +191,7 @@ export interface ObjetoConocido {
    * Mediciones en la imagen; vacía si no se midió
    */
   deteccion: DeteccionDeConocido[]
-  fuente: 'SkyBoT' | 'Horizons' | 'SIMBAD'
+  fuente: 'SkyBoT' | 'Horizons' | 'SIMBAD' | 'Gaia DR3'
   consultado_en: string
   magnitud: Magnitud | null
 }
