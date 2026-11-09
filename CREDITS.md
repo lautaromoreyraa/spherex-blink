@@ -12,7 +12,8 @@ licencia original.
 | SPHEREx (NASA/JPL-Caltech), distribuido por [IRSA](https://irsa.ipac.caltech.edu/) | Imágenes L2 de todas las épocas |
 | [SkyBoT](https://ssp.imcce.fr/webservices/skybot/) (IMCCE) | Cuerpos del Sistema Solar en cada campo y fecha |
 | [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) (NASA/JPL) | Efemérides de cuerpos del Sistema Solar |
-| [SIMBAD](https://simbad.cds.unistra.fr/) (CDS, Estrasburgo) | Estrellas de catálogo y su movimiento propio |
+| [SIMBAD](https://simbad.cds.unistra.fr/) (CDS, Estrasburgo) | La Estrella de Barnard y su movimiento propio |
+| [Gaia DR3](https://www.cosmos.esa.int/gaia) (ESA/DPAC), servido por IRSA (`gaia_dr3_source`) | Estrellas fijas con las que se controla la alineación de cada época |
 
 ### Reconocimientos
 
@@ -25,10 +26,9 @@ muestra en el pie de todas las páginas (`web/src/layout/reconocimientos.ts`).
   for the History of the Universe, Epoch of Reionization and Ices Explorer
   (SPHEREx), which is a joint project of the Jet Propulsion Laboratory and the
   California Institute of Technology, and is funded by the National
-  Aeronautics and Space Administration.» Además se cita el DOI del Quick
-  Release usado (QR1 10.26131/IRSA629, QR2 10.26131/IRSA652, QR3
-  10.26131/IRSA662), que se fija cuando el pipeline elija la versión de los
-  datos.
+  Aeronautics and Space Administration.» Además se cita el DOI de cada Quick
+  Release usado: los campos de la demo usan QR2 (10.26131/IRSA652) y QR3
+  (10.26131/IRSA662); la URI de cada época dice de cuál salió.
 - **IRSA** ([Acknowledging IRSA](https://irsa.ipac.caltech.edu/ack.html)):
   «This research has made use of the NASA/IPAC Infrared Science Archive, which
   is funded by the National Aeronautics and Space Administration and operated
@@ -44,19 +44,35 @@ muestra en el pie de todas las páginas (`web/src/layout/reconocimientos.ts`).
 - **SIMBAD** ([CDS](https://cdsxmatch.cds.unistra.fr/xmatch/doc/simbad-ack.html)):
   «This research has made use of the SIMBAD database, operated at CDS,
   Strasbourg, France», con la cita de Wenger et al. 2000, A&AS 143, 9.
+- **Gaia** ([ESA](https://www.cosmos.esa.int/web/gaia-users/credits)): «This
+  work has made use of data from the European Space Agency (ESA) mission Gaia
+  (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and
+  Analysis Consortium (DPAC,
+  https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC
+  has been provided by national institutions, in particular the institutions
+  participating in the Gaia Multilateral Agreement.»
 
 Los términos para redistribuir recortes procesados de IRSA se citan acá con su
-enlace antes de publicar los campos de la demo.
+enlace antes de publicar los campos de la demo en producción (TAR-07).
 
 ## Código de terceros
 
-| Repositorio | Licencia | Archivos de este repo que lo adaptan |
-|---|---|---|
-| [Caltech-IPAC/irsa-tutorials](https://github.com/Caltech-IPAC/irsa-tutorials), `tutorials/spherex/` | BSD-3-Clause | Ninguno todavía |
-| [mateibut/SPHEREx](https://github.com/mateibut/SPHEREx) (y su fork [Andrei25Ciuta/SPHEREx](https://github.com/Andrei25Ciuta/SPHEREx)), `backend/spherex/` | MIT | Ninguno todavía |
+Cada archivo que adapta código conserva en su cabecera el origen, el aviso de
+copyright y la licencia.
 
-Cuando un módulo adapte código de alguno de estos repos, la fila se completa
-con la ruta del archivo de este repo y la del original.
+| Repositorio | Licencia | Qué se tomó | Archivo de este repo |
+|---|---|---|---|
+| [Caltech-IPAC/irsa-tutorials](https://github.com/Caltech-IPAC/irsa-tutorials), `tutorials/spherex/spherex_cutouts.md` (Copyright (c) 2022-2026 California Institute of Technology) | BSD-3-Clause | La consulta ADQL sobre `spherex.plane` + `spherex.artifact` | `core/observaciones.py` |
+| Idem, `spherex_cutouts.md` | BSD-3-Clause | La URL del recorte en el servidor (`?center=…d&size=…d`) y la descarga en paralelo con 7 a 12 pedidos | `core/recortes.py` |
+| Idem, `spherex_intro.md` | BSD-3-Clause | La longitud de onda por píxel con la WCS alternativa «W» sin SIP | `core/recortes.py` |
+| [mateibut/SPHEREx](https://github.com/mateibut/SPHEREx), `backend/spherex/flags.py` (Copyright (c) 2026 mateibut) | MIT | La lista de bits malos de FLAGS y la regla de no enmascarar «cualquier bit» | `core/mascara.py` |
+| Idem, `backend/spherex/stretch.py` | MIT | Fondo mediano restado por época y una escala asinh común (percentiles 1 y 99,7, a = 0,1) | `core/estiramiento.py` |
+| Idem, `backend/spherex/photometry.py` | MIT | Fotometría de apertura con fondo y error del anillo | `core/medicion.py` |
+| Idem, `backend/spherex/cutout.py` | MIT | La rejilla TAN norte arriba con el píxel nativo | `core/rejilla.py` |
+| Idem, `backend/spherex/query.py` | MIT | La lectura de la longitud de onda central del recorte (misma receta de IRSA) | `core/recortes.py` |
+
+Andrei25Ciuta/SPHEREx es un fork de mateibut/SPHEREx: el crédito va al
+original. De los equipos que compiten en el mismo desafío no se tomó código.
 
 ## Librerías
 
@@ -67,6 +83,12 @@ Se usan como dependencias, sin modificarlas.
 | [Pydantic](https://github.com/pydantic/pydantic) | MIT | Modelos del contrato y exportación a JSON Schema |
 | [FastAPI](https://github.com/fastapi/fastapi) y [Uvicorn](https://github.com/encode/uvicorn) | MIT · BSD-3-Clause | API del modo en vivo |
 | [jsonschema](https://github.com/python-jsonschema/jsonschema) | MIT | Validación de los archivos generados contra el schema |
+| [Astropy](https://github.com/astropy/astropy) | BSD-3-Clause | FITS, WCS, VOTable, coordenadas y movimiento propio (`apply_space_motion`) |
+| [reproject](https://github.com/astropy/reproject) | BSD-3-Clause | Reproyección de cada época a la rejilla común |
+| [photutils](https://github.com/astropy/photutils) | BSD-3-Clause | Centroide de las fuentes medidas |
+| [NumPy](https://github.com/numpy/numpy) y [SciPy](https://github.com/scipy/scipy) | BSD-3-Clause | Cálculo numérico |
+| [Pillow](https://github.com/python-pillow/Pillow) | MIT-CMU | Exportación a WebP |
+| [httpx2](https://github.com/pydantic/httpx2) | BSD-3-Clause | Pedidos HTTP a IRSA, SIMBAD y Horizons |
 | [React](https://github.com/facebook/react) | MIT | Interfaz web |
 | [Vite](https://github.com/vitejs/vite) | MIT | Build de la web |
 | [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) | MIT | Tipos TS generados desde el contrato |

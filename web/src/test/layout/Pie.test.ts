@@ -6,7 +6,14 @@ import Pie from '../../layout/Pie.tsx'
 describe('Pie', () => {
   const html = renderToStaticMarkup(createElement(Pie))
 
-  it.each(['SPHEREx', 'NASA/IPAC Infrared Science Archive', 'SkyBoT', 'JPL Horizons', 'SIMBAD'])(
+  it.each([
+    'SPHEREx',
+    'NASA/IPAC Infrared Science Archive',
+    'SkyBoT',
+    'JPL Horizons',
+    'SIMBAD',
+    'Gaia',
+  ])(
     'reconoce a %s',
     (fuente) => {
       expect(html).toContain(fuente)
