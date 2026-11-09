@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout__contenido {
+  flex: 1;
+}
+
+/*
+ * El pie se tiene que leer proyectado en la sala del jurado (RNF-05), así que
+ * el cuerpo no baja de 1rem. overflow-wrap corta la URL larga de Horizons
+ * para que en un celular de 360 px no aparezca desplazamiento horizontal.
+ */
+.pie {
+  width: 100%;
+  max-width: var(--ancho-lectura);
+  margin: 0 auto;
+  padding: var(--espacio-8) var(--espacio-4);
+  color: var(--color-texto-suave);
+  font-size: var(--texto-base);
+  overflow-wrap: anywhere;
+}
+
+.pie__titulo {
+  margin: 0 0 var(--espacio-4);
+  font-size: var(--texto-grande);
+  color: var(--color-texto);
+}
+
+.pie__lista {
+  display: grid;
+  gap: var(--espacio-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

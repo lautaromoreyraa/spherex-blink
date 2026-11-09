@@ -1,0 +1,6 @@
+# Fin de línea LF en todo el repo: los archivos generados del contrato se
+# comparan en la CI (Linux) y no pueden diferir sólo por CRLF de Windows.
+* text=auto eol=lf
+*.webp binary
+*.png binary
+*.fits binary

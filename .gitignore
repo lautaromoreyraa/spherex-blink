@@ -28,3 +28,8 @@ cache/
 *.fits
 .env
 .env.local
+
+# Resultados de Playwright y estado local de Wrangler
+playwright-report/
+test-results/
+.wrangler/

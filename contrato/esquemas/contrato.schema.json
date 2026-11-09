@@ -1,0 +1,958 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "contrato 0.1.0",
+  "title": "Contrato",
+  "$defs": {
+    "Campo": {
+      "additionalProperties": false,
+      "description": "Raíz de `campo.json`.",
+      "properties": {
+        "id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "nombre": {
+          "$ref": "#/$defs/TextoTraducido"
+        },
+        "descripcion": {
+          "$ref": "#/$defs/TextoTraducido"
+        },
+        "centro": {
+          "$ref": "#/$defs/Coordenadas"
+        },
+        "tamano_grados": {
+          "description": "Lado del campo en grados",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6"
+          ],
+          "type": "string"
+        },
+        "rejilla": {
+          "$ref": "#/$defs/Rejilla"
+        },
+        "estiramiento": {
+          "$ref": "#/$defs/Estiramiento"
+        },
+        "epocas": {
+          "description": "Ordenadas por mjd",
+          "items": {
+            "$ref": "#/$defs/Epoca"
+          },
+          "type": "array"
+        },
+        "referencia": {
+          "description": "Mediana de las épocas",
+          "minLength": 1,
+          "type": "string"
+        },
+        "rastro": {
+          "anyOf": [
+            {
+              "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Máximo por píxel (RF-17)"
+        },
+        "conocidos": {
+          "items": {
+            "$ref": "#/$defs/ObjetoConocido"
+          },
+          "type": "array"
+        },
+        "candidatos": {
+          "items": {
+            "$ref": "#/$defs/Candidato"
+          },
+          "type": "array"
+        },
+        "limites": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Limites"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "avisos": {
+          "items": {
+            "$ref": "#/$defs/TextoTraducido"
+          },
+          "type": "array"
+        },
+        "creditos": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "nombre",
+        "descripcion",
+        "centro",
+        "tamano_grados",
+        "detector",
+        "rejilla",
+        "estiramiento",
+        "epocas",
+        "referencia",
+        "rastro",
+        "conocidos",
+        "candidatos",
+        "limites",
+        "avisos",
+        "creditos"
+      ],
+      "title": "Campo",
+      "type": "object"
+    },
+    "Candidato": {
+      "additionalProperties": false,
+      "description": "Grupo de detecciones compatible con un movimiento; no es un descubrimiento.",
+      "properties": {
+        "id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "detecciones": {
+          "items": {
+            "$ref": "#/$defs/Deteccion"
+          },
+          "minItems": 3,
+          "type": "array"
+        },
+        "velocidad_arcsec_h": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "angulo_posicion_grados": {
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "residuo_arcsec": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "falsas_alarmas_esperadas": {
+          "description": "Enlaces espurios esperados (RF-21)",
+          "minimum": 0,
+          "type": "number"
+        },
+        "identificacion": {
+          "$ref": "#/$defs/Identificacion"
+        }
+      },
+      "required": [
+        "id",
+        "detecciones",
+        "velocidad_arcsec_h",
+        "angulo_posicion_grados",
+        "residuo_arcsec",
+        "falsas_alarmas_esperadas",
+        "identificacion"
+      ],
+      "title": "Candidato",
+      "type": "object"
+    },
+    "Coordenadas": {
+      "additionalProperties": false,
+      "description": "Punto del cielo en grados ICRS.",
+      "properties": {
+        "ra": {
+          "description": "Ascensión recta ICRS en grados",
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "dec": {
+          "description": "Declinación ICRS en grados",
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        }
+      },
+      "required": [
+        "ra",
+        "dec"
+      ],
+      "title": "Coordenadas",
+      "type": "object"
+    },
+    "Deteccion": {
+      "additionalProperties": false,
+      "properties": {
+        "epoca_id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "ra": {
+          "description": "Ascensión recta ICRS en grados",
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "dec": {
+          "description": "Declinación ICRS en grados",
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        },
+        "snr": {
+          "description": "Relación señal/ruido de la detección",
+          "type": "number"
+        }
+      },
+      "required": [
+        "epoca_id",
+        "x",
+        "y",
+        "ra",
+        "dec",
+        "snr"
+      ],
+      "title": "Deteccion",
+      "type": "object"
+    },
+    "Epoca": {
+      "additionalProperties": false,
+      "description": "Un recorte usado en el campo.",
+      "properties": {
+        "id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "mjd": {
+          "description": "Inicio de la observación (time_bounds_lower) en MJD",
+          "type": "number"
+        },
+        "fecha_utc": {
+          "description": "Inicio de la observación en UTC",
+          "format": "date-time",
+          "type": "string"
+        },
+        "pasada": {
+          "description": "Número de pasada de SPHEREx",
+          "maximum": 4,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "fuente": {
+          "$ref": "#/$defs/FuenteDeEpoca"
+        },
+        "longitud_onda_um": {
+          "description": "Longitud de onda central en el centro",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "fraccion_mala": {
+          "description": "Fracción enmascarada por FLAGS",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "imagen": {
+          "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+          "minLength": 1,
+          "type": "string"
+        },
+        "diferencia": {
+          "anyOf": [
+            {
+              "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Diferencia contra la mediana de las otras épocas; null con menos de 3"
+        }
+      },
+      "required": [
+        "id",
+        "mjd",
+        "fecha_utc",
+        "pasada",
+        "fuente",
+        "longitud_onda_um",
+        "fraccion_mala",
+        "imagen",
+        "diferencia"
+      ],
+      "title": "Epoca",
+      "type": "object"
+    },
+    "ErrorDeApi": {
+      "additionalProperties": false,
+      "description": "Cuerpo de toda respuesta de error.",
+      "properties": {
+        "codigo": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mensaje": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "codigo",
+        "mensaje"
+      ],
+      "title": "ErrorDeApi",
+      "type": "object"
+    },
+    "Estiramiento": {
+      "additionalProperties": false,
+      "description": "Escala de brillo común a todas las épocas del campo (RF-05).",
+      "properties": {
+        "tipo": {
+          "enum": [
+            "lineal",
+            "asinh"
+          ],
+          "type": "string"
+        },
+        "minimo": {
+          "description": "MJy/sr que se pintan negros",
+          "type": "number"
+        },
+        "maximo": {
+          "description": "MJy/sr que se pintan blancos",
+          "type": "number"
+        }
+      },
+      "required": [
+        "tipo",
+        "minimo",
+        "maximo"
+      ],
+      "title": "Estiramiento",
+      "type": "object"
+    },
+    "FuenteDeEpoca": {
+      "additionalProperties": false,
+      "description": "De qué archivo de IRSA salió la época (RF-15, RNF-07).",
+      "properties": {
+        "uri": {
+          "description": "URI de IRSA del archivo L2",
+          "pattern": "^https://",
+          "type": "string"
+        },
+        "planeid": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version_proceso": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "planeid",
+        "version_proceso"
+      ],
+      "title": "FuenteDeEpoca",
+      "type": "object"
+    },
+    "Identificacion": {
+      "additionalProperties": false,
+      "properties": {
+        "estado": {
+          "enum": [
+            "conocido",
+            "sin-identificar"
+          ],
+          "type": "string"
+        },
+        "nombre": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "distancia_arcsec": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "estado",
+        "nombre",
+        "distancia_arcsec"
+      ],
+      "title": "Identificacion",
+      "type": "object"
+    },
+    "Indice": {
+      "additionalProperties": false,
+      "description": "Raíz de `indice.json`.",
+      "properties": {
+        "version_contrato": {
+          "description": "Versión del contrato con que se generó",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "generado_en": {
+          "description": "Cuándo corrió el pipeline (UTC)",
+          "format": "date-time",
+          "type": "string"
+        },
+        "campos": {
+          "items": {
+            "$ref": "#/$defs/ResumenDeCampo"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "version_contrato",
+        "generado_en",
+        "campos"
+      ],
+      "title": "Indice",
+      "type": "object"
+    },
+    "Limites": {
+      "additionalProperties": false,
+      "description": "Límites medidos por inyección de objetos falsos (RF-27).",
+      "properties": {
+        "umbral_sigma": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "profundidad_5sigma": {
+          "$ref": "#/$defs/Profundidad"
+        },
+        "recuperacion": {
+          "items": {
+            "$ref": "#/$defs/PuntoDeRecuperacion"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "umbral_sigma",
+        "profundidad_5sigma",
+        "recuperacion"
+      ],
+      "title": "Limites",
+      "type": "object"
+    },
+    "Magnitud": {
+      "additionalProperties": false,
+      "properties": {
+        "valor": {
+          "type": "number"
+        },
+        "banda": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "valor",
+        "banda"
+      ],
+      "title": "Magnitud",
+      "type": "object"
+    },
+    "ObjetoConocido": {
+      "additionalProperties": false,
+      "description": "Cuerpo del Sistema Solar o estrella de catálogo con posición esperada.",
+      "properties": {
+        "nombre": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "tipo": {
+          "enum": [
+            "estrella",
+            "asteroide",
+            "cometa",
+            "tno",
+            "planeta",
+            "enana-marron"
+          ],
+          "type": "string"
+        },
+        "posiciones": {
+          "items": {
+            "$ref": "#/$defs/PosicionEsperada"
+          },
+          "type": "array"
+        },
+        "fuente": {
+          "enum": [
+            "SkyBoT",
+            "Horizons",
+            "SIMBAD"
+          ],
+          "type": "string"
+        },
+        "consultado_en": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "magnitud": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Magnitud"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "nombre",
+        "tipo",
+        "posiciones",
+        "fuente",
+        "consultado_en",
+        "magnitud"
+      ],
+      "title": "ObjetoConocido",
+      "type": "object"
+    },
+    "PedidoDeTrabajo": {
+      "title": "PedidoDeTrabajo",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PedidoPorCoordenadas"
+        },
+        {
+          "$ref": "#/$defs/PedidoPorNombre"
+        }
+      ]
+    },
+    "PedidoPorCoordenadas": {
+      "additionalProperties": false,
+      "description": "`POST /trabajos` con el centro del campo.",
+      "properties": {
+        "ra": {
+          "description": "Ascensión recta ICRS en grados",
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "dec": {
+          "description": "Declinación ICRS en grados",
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        },
+        "tamano_grados": {
+          "description": "Lado del campo en grados",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "ra",
+        "dec",
+        "tamano_grados",
+        "detector"
+      ],
+      "title": "PedidoPorCoordenadas",
+      "type": "object"
+    },
+    "PedidoPorNombre": {
+      "additionalProperties": false,
+      "description": "`POST /trabajos` con el nombre de un objeto.",
+      "properties": {
+        "nombre": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "tamano_grados": {
+          "description": "Lado del campo en grados",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "nombre",
+        "tamano_grados",
+        "detector"
+      ],
+      "title": "PedidoPorNombre",
+      "type": "object"
+    },
+    "PosicionEsperada": {
+      "additionalProperties": false,
+      "description": "Dónde tenía que estar un objeto conocido en una época.",
+      "properties": {
+        "epoca_id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "ra": {
+          "description": "Ascensión recta ICRS en grados",
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "type": "number"
+        },
+        "dec": {
+          "description": "Declinación ICRS en grados",
+          "maximum": 90,
+          "minimum": -90,
+          "type": "number"
+        },
+        "x": {
+          "description": "Píxel de la rejilla, origen arriba a la izquierda",
+          "type": "number"
+        },
+        "y": {
+          "description": "Píxel de la rejilla, origen arriba a la izquierda",
+          "type": "number"
+        },
+        "dentro_del_campo": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "epoca_id",
+        "ra",
+        "dec",
+        "x",
+        "y",
+        "dentro_del_campo"
+      ],
+      "title": "PosicionEsperada",
+      "type": "object"
+    },
+    "Profundidad": {
+      "additionalProperties": false,
+      "properties": {
+        "mjy_sr": {
+          "description": "Brillo de superficie a 5σ en MJy/sr",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "magnitud": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Magnitud equivalente, si se puede calcular"
+        }
+      },
+      "required": [
+        "mjy_sr",
+        "magnitud"
+      ],
+      "title": "Profundidad",
+      "type": "object"
+    },
+    "PuntoDeRecuperacion": {
+      "additionalProperties": false,
+      "properties": {
+        "brillo": {
+          "type": "number"
+        },
+        "fraccion_recuperada": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "brillo",
+        "fraccion_recuperada"
+      ],
+      "title": "PuntoDeRecuperacion",
+      "type": "object"
+    },
+    "Rejilla": {
+      "additionalProperties": false,
+      "description": "Rejilla común norte arriba a la que se reproyectan todas las épocas.",
+      "properties": {
+        "ancho_px": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        "alto_px": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        "escala_arcsec_px": {
+          "description": "Segundos de arco por píxel",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "wcs": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "description": "Cabecera FITS TAN de la rejilla, como diccionario",
+          "type": "object"
+        }
+      },
+      "required": [
+        "ancho_px",
+        "alto_px",
+        "escala_arcsec_px",
+        "wcs"
+      ],
+      "title": "Rejilla",
+      "type": "object"
+    },
+    "ResumenDeCampo": {
+      "additionalProperties": false,
+      "description": "Lo que la página de inicio necesita para listar un campo.",
+      "properties": {
+        "id": {
+          "description": "Identificador en kebab-case",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "nombre": {
+          "$ref": "#/$defs/TextoTraducido"
+        },
+        "centro": {
+          "$ref": "#/$defs/Coordenadas"
+        },
+        "tamano_grados": {
+          "description": "Lado del campo en grados",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "D1",
+            "D2",
+            "D3",
+            "D4",
+            "D5",
+            "D6"
+          ],
+          "type": "string"
+        },
+        "cantidad_epocas": {
+          "description": "Épocas incluidas en el campo",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "objeto_destacado": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Lo que hay que mirar en el campo"
+        },
+        "miniatura": {
+          "description": "Ruta relativa a web/public/datos/ (o servida por la API en el modo en vivo)",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "nombre",
+        "centro",
+        "tamano_grados",
+        "detector",
+        "cantidad_epocas",
+        "objeto_destacado",
+        "miniatura"
+      ],
+      "title": "ResumenDeCampo",
+      "type": "object"
+    },
+    "Salud": {
+      "additionalProperties": false,
+      "description": "Respuesta de `GET /salud`.",
+      "properties": {
+        "estado": {
+          "const": "ok",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "estado",
+        "version"
+      ],
+      "title": "Salud",
+      "type": "object"
+    },
+    "TextoTraducido": {
+      "additionalProperties": false,
+      "description": "Texto en los dos idiomas de la interfaz (RNF-06).",
+      "properties": {
+        "es": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "en": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "es",
+        "en"
+      ],
+      "title": "TextoTraducido",
+      "type": "object"
+    },
+    "Trabajo": {
+      "additionalProperties": false,
+      "description": "Respuesta de `GET /trabajos/{trabajo_id}`.",
+      "properties": {
+        "estado": {
+          "enum": [
+            "pendiente",
+            "en-curso",
+            "parcial",
+            "listo",
+            "error"
+          ],
+          "type": "string"
+        },
+        "progreso": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "epocas_listas": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "epocas_totales": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "errores": {
+          "items": {
+            "$ref": "#/$defs/ErrorDeApi"
+          },
+          "type": "array"
+        },
+        "campo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Campo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "estado",
+        "progreso",
+        "epocas_listas",
+        "epocas_totales",
+        "errores",
+        "campo"
+      ],
+      "title": "Trabajo",
+      "type": "object"
+    },
+    "TrabajoCreado": {
+      "additionalProperties": false,
+      "description": "Respuesta de `POST /trabajos`.",
+      "properties": {
+        "trabajo_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "trabajo_id"
+      ],
+      "title": "TrabajoCreado",
+      "type": "object"
+    }
+  }
+}
