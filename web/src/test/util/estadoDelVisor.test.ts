@@ -13,6 +13,19 @@ describe('estado del visor', () => {
     expect(estadoInicial(campo, true).reproduciendo).toBe(false)
   })
 
+  it('llegando desde la escena abre en la época del vuelo y en pausa (RF-36)', () => {
+    const ultima = campo.epocas.at(-1)!
+    const e = estadoInicial(campo, false, { epocaId: ultima.id, enPausa: true })
+    expect(e.indice).toBe(campo.epocas.length - 1)
+    expect(e.reproduciendo).toBe(false)
+  })
+
+  it('una época del vuelo que no existe abre en la primera', () => {
+    const e = estadoInicial(campo, false, { epocaId: 'no-esta', enPausa: false })
+    expect(e.indice).toBe(0)
+    expect(e.reproduciendo).toBe(true)
+  })
+
   it('arranca con el rango y el límite del pipeline, en inferno y con los marcadores de Gaia apagados', () => {
     const e = estadoInicial(campo, true)
     expect(e.rango).toEqual({ minimo: 0.5, maximo: 40 })
@@ -31,7 +44,7 @@ describe('estado del visor', () => {
     expect(e.indice).toBe(2)
   })
 
-  it('la velocidad nunca pasa de 3 cambios por segundo', () => {
+  it('la velocidad nunca pasa de 2,5 cambios por segundo (RNF-04)', () => {
     const e = reducir(estadoInicial(campo, true), { tipo: 'velocidad', cambiosPorSegundo: 20 })
     expect(e.cambiosPorSegundo).toBe(CAMBIOS_POR_SEGUNDO_MAXIMO)
   })

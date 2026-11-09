@@ -1,0 +1,240 @@
+/*
+ * Escena del Sistema Solar (RF-34 a RF-36). Tema «sala de control
+ * infrarroja»: las líneas de visión van del azul frío (λ corta, las otras
+ * épocas) al ámbar (λ larga, la época elegida). WebGL lee estos colores de
+ * las variables de .escena, así que tienen que ser colores que three.js
+ * entienda (hex o var() de un hex), no color-mix().
+ *
+ * Todo lo que se lee en la demo mide 18 px o más (proyector, RNF-05).
+ */
+.escena {
+  --escena-calido: var(--color-ambar);
+  --escena-orbita: var(--color-texto-suave);
+  --escena-orbita-objeto: var(--escena-calido);
+  --escena-linea: var(--color-frio);
+  --escena-linea-actual: var(--escena-calido);
+  --escena-cuerpo-liso: var(--color-texto-suave);
+  --escena-marco: var(--color-frio);
+  --escena-texto: var(--texto-base);
+
+  display: grid;
+  gap: var(--espacio-6);
+  width: 100%;
+  max-width: var(--ancho-pagina);
+  margin: 0 auto;
+  padding: var(--espacio-8) var(--margen-lateral);
+  font-size: var(--escena-texto);
+}
+
+.escena__titulo {
+  margin: 0;
+  font-size: var(--texto-titulo);
+  line-height: 1.1;
+}
+
+.escena__bajada {
+  margin: var(--espacio-2) 0 var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+.escena__campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.escena__campos a {
+  display: inline-block;
+  min-height: var(--tactil);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+}
+
+.escena__campos a[aria-current='page'] {
+  border-color: var(--color-frio);
+  color: var(--color-texto);
+}
+
+.escena__aviso {
+  margin: 0;
+  padding: var(--espacio-3) var(--espacio-4);
+  border-left: 4px solid var(--color-alerta-borde);
+  background: var(--color-alerta-fondo);
+}
+
+.escena__lienzo {
+  position: relative;
+  min-height: 22rem;
+  height: 70vh;
+  border-radius: var(--radio);
+  background: var(--color-fondo-visor);
+  overflow: hidden;
+}
+
+.escena__lienzo-3d {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Rótulos de los cuerpos: botones de verdad sobre el lienzo. */
+.escena__rotulo {
+  min-height: 1.75rem;
+  padding: 0.125rem var(--espacio-2);
+  border: 1px solid transparent;
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: var(--escena-texto);
+  white-space: nowrap;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+
+.escena__rotulo--campo {
+  border-color: var(--escena-calido);
+}
+
+/* Durante el vuelo los rótulos taparían el recorte; visibility los saca
+   también del orden de Tab. */
+.escena__lienzo-3d[data-volando] .escena__rotulo {
+  visibility: hidden;
+}
+
+.escena__fija {
+  margin: 0;
+}
+
+.escena__fija img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.escena__fija figcaption {
+  padding: var(--espacio-3) var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+.escena__vuelo {
+  position: absolute;
+  inset: auto var(--espacio-4) var(--espacio-4) auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+}
+
+.escena__cuerpos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+/* Rótulo del lienzo del cuerpo elegido en la lista. */
+.escena__rotulo[data-elegido] {
+  border-color: var(--color-frio);
+  opacity: 1;
+}
+
+.escena__controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+}
+
+.escena__tiempo {
+  display: grid;
+  gap: var(--espacio-2);
+  flex: 1 1 20rem;
+}
+
+.escena__tiempo input[type='range'] {
+  width: 100%;
+  min-height: var(--tactil);
+  accent-color: var(--escena-calido);
+}
+
+/* La fecha se tiene que leer a 4 m del proyector (RNF-05): 24 px o más. */
+.escena__fecha {
+  margin: 0;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-fecha);
+}
+
+.escena__pasada {
+  color: var(--color-texto-suave);
+}
+
+.escena__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.escena__boton {
+  min-height: var(--tactil);
+  padding: var(--espacio-2) var(--espacio-4);
+  border: 1px solid var(--color-borde-control);
+  border-radius: var(--radio);
+  background: transparent;
+  color: var(--color-texto);
+  font: inherit;
+  cursor: pointer;
+}
+
+.escena__boton[aria-pressed='true'] {
+  background: var(--color-frio);
+  color: var(--color-sobre-ambar);
+}
+
+.escena__boton--principal {
+  border-color: var(--escena-calido);
+  background: var(--escena-calido);
+  color: var(--color-sobre-ambar);
+}
+
+.escena__boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.escena__panel {
+  max-width: var(--ancho-lectura);
+}
+
+.escena__panel h2 {
+  margin: 0 0 var(--espacio-3);
+  font-size: var(--texto-seccion);
+}
+
+.escena__dato {
+  font-family: var(--fuente-mono);
+  color: var(--escena-calido);
+}
+
+.escena__nota {
+  color: var(--color-texto-suave);
+}
+
+.escena__estado {
+  padding: var(--espacio-8) var(--espacio-4);
+  color: var(--color-texto-suave);
+}
+
+.escena__creditos {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-chico);
+}

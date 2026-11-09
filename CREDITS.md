@@ -15,6 +15,21 @@ licencia original.
 | [SIMBAD](https://simbad.cds.unistra.fr/) (CDS, Estrasburgo) | La Estrella de Barnard y su movimiento propio |
 | [Gaia DR3](https://www.cosmos.esa.int/gaia) (ESA/DPAC), servido por IRSA (`gaia_dr3_source`) | Estrellas fijas con las que se controla la alineación de cada época |
 
+### Texturas de la escena 3D
+
+| Fuente | Licencia | Archivos | Uso |
+|---|---|---|---|
+| [Solar System Scope](https://www.solarsystemscope.com/textures/) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), confirmada en su página el 2026-11-08 | `web/public/texturas/*.webp` | Sol, planetas, anillos de Saturno y fondo de estrellas con la Vía Láctea. Se bajaron las versiones 2K (`2k_sun.jpg`, `2k_mercury.jpg`, `2k_venus_atmosphere.jpg`, `2k_earth_daymap.jpg`, `2k_mars.jpg`, `2k_jupiter.jpg`, `2k_saturn.jpg`, `2k_saturn_ring_alpha.png`, `2k_uranus.jpg`, `2k_neptune.jpg`, `2k_stars_milky_way.jpg`) y se convirtieron a WebP, algunas reducidas a 1024 px de ancho |
+| Idem, colección «Fictional» | CC BY 4.0 | `web/public/texturas/makemake-ilustracion.webp` (de `2k_makemake_fictional.jpg`) | Superficie de Makemake. **Es inventada**: no hay fotos de su superficie, y la escena la rotula como ilustración |
+
+La imagen fija de la escena (`web/public/escena/escena-fija.jpg`), que se
+muestra sin WebGL, es una captura de la propia escena con esas texturas
+(`web/scripts/capturar-escena-fija.mjs`).
+
+Los elementos orbitales con los que se dibuja la órbita de Makemake y los
+vectores con los que se prueban las efemérides de la escena salen de JPL
+Horizons (consultados el 2026-11-09).
+
 ### Reconocimientos
 
 Son los textos que pide cada fuente, consultados el 2026-11-08. El sitio los
@@ -99,6 +114,9 @@ Se usan como dependencias, sin modificarlas.
 | [Vite](https://github.com/vitejs/vite) | MIT | Build de la web |
 | [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) | MIT | Tipos TS generados desde el contrato |
 | [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm) | MPL-2.0 | Revisión de accesibilidad en las pruebas e2e (sólo desarrollo) |
+| [three.js](https://github.com/mrdoob/three.js) | MIT | Escena 3D del Sistema Solar |
+| [@react-three/fiber](https://github.com/pmndrs/react-three-fiber) y [@react-three/drei](https://github.com/pmndrs/drei) | MIT | La escena 3D como componentes de React: rótulos en el DOM, controles de cámara, `PerformanceMonitor` |
+| [astronomy-engine](https://github.com/cosinekitty/astronomy) | MIT | Posición de los planetas en la fecha de cada época, en el navegador |
 
 ## Tipografías y mapas de color
 

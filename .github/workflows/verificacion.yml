@@ -97,6 +97,10 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      # RNF-13: JS inicial, chunk de la escena 3D y texturas contra su
+      # presupuesto, medidos sobre la build recién hecha.
+      - name: Presupuesto
+        run: npm run presupuesto
       - name: Navegador de Playwright
         run: npx playwright install --with-deps chromium
       - name: Tests en el navegador

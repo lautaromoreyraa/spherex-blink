@@ -13,6 +13,7 @@ describe('Pie', () => {
     'JPL Horizons',
     'SIMBAD',
     'Gaia',
+    'Solar System Scope',
   ])(
     'reconoce a %s',
     (fuente) => {

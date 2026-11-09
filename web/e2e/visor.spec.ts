@@ -39,7 +39,8 @@ test.describe('sin red externa (RNF-01)', () => {
   test('un campo se elige con Tab + Enter (RF-10)', async ({ page }) => {
     await sinRedExterna(page)
     await page.goto('/')
-    const enlace = page.getByRole('link', { name: /Makemake/ }).last()
+    // La tarjeta del campo, no el enlace del inicio a la escena de Makemake.
+    const enlace = page.getByRole('listitem').getByRole('link', { name: /Makemake/ })
     await expect(enlace).toBeVisible()
     await enlace.focus()
     await page.keyboard.press('Enter')

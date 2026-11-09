@@ -1,4 +1,4 @@
-import { useEffect, useId, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import type { Campo as DatosDelCampo } from '../api/tipos.ts'
 import EstadoDeCarga from '../componentes/EstadoDeCarga.tsx'
 import Enlace from '../componentes/Enlace.tsx'
@@ -11,7 +11,7 @@ import { useEstadoDelVisor } from '../hooks/useEstadoDelVisor.ts'
 import { useIdioma } from '../hooks/useIdioma.ts'
 import '../estilos/campo.css'
 import type { Pixeles } from '../util/pintura.ts'
-import { direccion } from '../util/rutas.ts'
+import { direccion, llegadaDesdeLaEscena } from '../util/rutas.ts'
 import { formatearNumero } from '../util/textos.ts'
 import { formatearDec, formatearRa } from '../util/wcs.ts'
 
@@ -77,6 +77,12 @@ export default function Campo({ id }: { id: string }) {
             {t('campo.cantidadDeAvisos', { n: datos.avisos.length })}
           </a>
         ) : null}
+        {/* Sólo los campos que siguen un cuerpo del Sistema Solar tienen escena (RF-34). */}
+        {datos.geometria ? (
+          <Enlace href={direccion({ pagina: 'escena', id: datos.id })}>
+            {t('campo.escena', { objeto: datos.geometria.objeto.nombre })}
+          </Enlace>
+        ) : null}
         <Enlace href={direccion({ pagina: 'limites' })}>{t('campo.limites')}</Enlace>
       </p>
     </header>
@@ -119,7 +125,13 @@ function CampoListo({
   pixeles: Map<string, Pixeles>
   cabecera: ReactNode
 }) {
-  const { estado, despachar } = useEstadoDelVisor(campo)
+  // Si se llega con el vuelo de la escena, el visor abre quieto en la época
+  // que trae el vuelo y el lienzo toma el foco (RF-36).
+  const [llegada] = useState(() => llegadaDesdeLaEscena(window.history.state))
+  const { estado, despachar } = useEstadoDelVisor(
+    campo,
+    llegada ? { epocaId: llegada.epoca, enPausa: true } : null,
+  )
   const { t, idioma } = useIdioma()
   const idAvisos = useId()
   const idCreditos = useId()
@@ -133,6 +145,7 @@ function CampoListo({
         estado={estado}
         despachar={despachar}
         cabecera={cabecera}
+        enfocarAlMontar={llegada !== null}
       />
 
       {campo.avisos.length > 0 ? (

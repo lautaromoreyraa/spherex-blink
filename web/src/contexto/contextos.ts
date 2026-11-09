@@ -13,8 +13,12 @@ export interface ContextoDeIdioma {
 export const IdiomaContexto = createContext<ContextoDeIdioma | null>(null)
 
 export interface ContextoDeNavegacion {
-  /** Va a una dirección del sitio sin recargar, como un enlace común. */
-  navegar: (href: string) => void
+  /**
+   * Va a una dirección del sitio sin recargar, como un enlace común. El
+   * estado opcional viaja en `history.state` (por ejemplo, la escena le dice
+   * al visor con qué época abrir, RF-36).
+   */
+  navegar: (href: string, estado?: unknown) => void
 }
 
 export const NavegacionContexto = createContext<ContextoDeNavegacion | null>(null)

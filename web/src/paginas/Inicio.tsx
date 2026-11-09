@@ -81,6 +81,9 @@ export default function Inicio() {
       </section>
 
       <p className="inicio__limites">
+        <Enlace href={direccion({ pagina: 'escena', id: 'makemake' })}>{t('inicio.escena')}</Enlace>
+      </p>
+      <p className="inicio__limites">
         <Enlace href={direccion({ pagina: 'limites' })}>{t('inicio.limites')}</Enlace>
       </p>
     </div>

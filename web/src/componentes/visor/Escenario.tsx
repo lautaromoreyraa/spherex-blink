@@ -36,6 +36,8 @@ interface Props {
   alTecla?: (evento: KeyboardEvent<HTMLDivElement>) => boolean
   superposicion?: (lienzo: Tamano) => ReactNode
   claseExtra?: string
+  /** Toma el foco al aparecer: el visor viene del vuelo de la escena (RF-36). */
+  enfocarAlMontar?: boolean
 }
 
 const FACTOR_DE_TECLA = 1.5
@@ -59,8 +61,15 @@ export default function Escenario({
   alTecla,
   superposicion,
   claseExtra,
+  enfocarAlMontar = false,
 }: Props) {
   const contenedor = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (enfocarAlMontar) contenedor.current?.focus({ preventScroll: true })
+    // Sólo al montarse: si después se vuelve a pintar, el foco no se mueve.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const lienzo = useRef<HTMLCanvasElement>(null)
   const pintor = useRef<Pintor | null>(null)
   const tamano = useTamano(contenedor)
