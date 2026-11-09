@@ -1,0 +1,589 @@
+/* Página de un campo: visor, avisos, comparación, procedencia y objetos. */
+.campo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-12);
+  max-width: var(--ancho-pagina);
+  margin: 0 auto;
+  padding: var(--espacio-6) var(--margen-lateral) 0;
+}
+
+/* Un hijo de grilla crece hasta su contenido: sin esto, una tabla ancha
+   empuja la página y aparece desplazamiento horizontal en el celular. */
+.campo > *,
+.procedencia > *,
+.conocidos > *,
+.visor > * {
+  min-width: 0;
+}
+
+.campo__cabecera {
+  display: grid;
+  gap: var(--espacio-3);
+}
+
+.campo__volver {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: var(--tactil);
+}
+
+.campo__titulo {
+  margin: 0;
+  font-size: var(--texto-titulo);
+  font-weight: 600;
+}
+
+.campo__descripcion {
+  max-width: var(--ancho-lectura);
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: var(--texto-grande);
+}
+
+.campo__hechos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3) var(--espacio-8);
+  margin: 0;
+}
+
+.campo__hechos dt {
+  color: var(--color-texto-suave);
+  font-size: var(--texto-chico);
+}
+
+.campo__hechos dd {
+  margin: 0;
+}
+
+.campo__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3) var(--espacio-8);
+  margin: 0;
+}
+
+.campo__avisos {
+  color: var(--color-ambar);
+}
+
+/* ---- Visor ---- */
+.visor__rotulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--espacio-2) var(--espacio-6);
+  margin-bottom: var(--espacio-3);
+}
+
+/* RNF-05: la fecha se lee a 4 m del proyector (≥ 24 px). */
+.visor__fecha {
+  margin: 0;
+  color: var(--color-ambar);
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-fecha);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.visor__detalle {
+  margin: 0;
+  color: var(--color-texto-suave);
+}
+
+/* En el celular todo va en una columna: cabecera, imagen y controles. En
+   pantallas anchas la imagen va a la izquierda desde arriba de la página y
+   la cabecera del campo y los controles, a la derecha: en el proyector la
+   imagen entra entera sin bajar (RNF-05). */
+.visor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-8);
+}
+
+@media (min-width: 68rem) {
+  .visor {
+    grid-template-columns: minmax(0, 75vh) minmax(20rem, 30rem);
+    grid-template-areas:
+      'escena cabecera'
+      'escena panel';
+    grid-template-rows: auto 1fr;
+    justify-content: start;
+    align-items: start;
+    column-gap: var(--espacio-12);
+  }
+
+  .visor__cabecera {
+    grid-area: cabecera;
+  }
+
+  .visor__escena {
+    grid-area: escena;
+  }
+
+  .visor__panel {
+    grid-area: panel;
+  }
+
+  .visor .campo__titulo {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+  }
+
+  .visor .campo__descripcion {
+    font-size: var(--texto-base);
+  }
+
+  /* El título de la sección sigue para el lector de pantalla, pero no le
+     roba alto a la imagen. */
+  .visor__titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.visor__ayuda {
+  max-width: 75vh;
+  margin: var(--espacio-3) 0 0;
+  color: var(--color-texto-suave);
+}
+
+.visor__panel {
+  display: grid;
+  gap: var(--espacio-4);
+}
+
+/* El escenario: cuadrado, del ancho disponible y nunca más alto que 75 % de
+   la pantalla. A 1920 × 1080 la imagen ocupa ~810 px de alto (RNF-05). */
+.escenario {
+  position: relative;
+  width: min(100%, 75vh);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-fondo-visor);
+  cursor: grab;
+  /* Con zoom 1, deslizar en vertical sigue bajando la página en el celular. */
+  touch-action: pan-y;
+}
+
+.escenario--ampliado {
+  touch-action: none;
+}
+
+.escenario--arrastrando {
+  cursor: grabbing;
+}
+
+.escenario:focus-visible {
+  outline-offset: 3px;
+}
+
+.escenario__lienzo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.escenario__superposicion {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ---- Marcadores (RF-14) ---- */
+.marcadores__trazos {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.marcadores__trazo {
+  fill: none;
+  stroke: var(--color-frio);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  opacity: 0.9;
+}
+
+.marcadores__medida {
+  stroke: var(--color-texto);
+  stroke-width: 2;
+}
+
+.marcador {
+  position: absolute;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 2px solid var(--color-frio);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 70%);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.marcador--control {
+  border-style: dashed;
+  border-color: var(--color-texto-suave);
+}
+
+.marcador--activo {
+  border-color: var(--color-ambar);
+  border-width: 3px;
+}
+
+.marcador__nombre {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  padding: 0 var(--espacio-2);
+  border-radius: var(--radio);
+  background: rgb(5 7 12 / 80%);
+  color: var(--color-frio);
+  font-size: var(--texto-chico);
+  white-space: nowrap;
+  transform: translate(-50%, -0.25rem);
+}
+
+/* ---- Panel de controles ---- */
+.grupo {
+  min-width: 0;
+  margin: 0;
+  padding: var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+}
+
+.grupo__titulo {
+  padding: 0 var(--espacio-2);
+  font-weight: 600;
+}
+
+.grupo__subtitulo {
+  margin: var(--espacio-4) 0 var(--espacio-2);
+  font-weight: 600;
+}
+
+.grupo--en-linea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-6);
+}
+
+.botonera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.botonera__valor {
+  min-width: 6rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.control {
+  display: grid;
+  gap: var(--espacio-1);
+  margin-top: var(--espacio-3);
+}
+
+.control--ancho {
+  width: min(100%, 75vh);
+}
+
+.control__etiqueta {
+  color: var(--color-texto-suave);
+}
+
+.opcion {
+  display: flex;
+  gap: var(--espacio-3);
+  align-items: flex-start;
+  padding: var(--espacio-2) 0;
+  cursor: pointer;
+}
+
+.opcion--deshabilitada {
+  cursor: not-allowed;
+}
+
+.opcion--deshabilitada .opcion__nombre {
+  color: var(--color-texto-suave);
+}
+
+.opcion__nombre {
+  display: block;
+}
+
+.opcion__ayuda {
+  display: block;
+  color: var(--color-texto-suave);
+}
+
+.coordenadas__lista {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--espacio-1) var(--espacio-4);
+  margin: 0;
+  font-family: var(--fuente-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.coordenadas__lista dt {
+  color: var(--color-texto-suave);
+}
+
+.coordenadas__lista dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Leyenda (RF-12, RF-37) ---- */
+.leyenda {
+  width: min(100%, 75vh);
+  margin: var(--espacio-6) 0 0;
+}
+
+.leyenda__titulo {
+  margin-bottom: var(--espacio-2);
+  font-weight: 600;
+}
+
+.leyenda__unidad {
+  color: var(--color-texto-suave);
+  font-weight: 400;
+}
+
+.leyenda__barra {
+  height: 1.25rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 2px;
+}
+
+.leyenda__marcas {
+  position: relative;
+  height: 1.75rem;
+  margin: 0 0.75rem;
+  padding: 0;
+  list-style: none;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-chico);
+}
+
+.leyenda__marca {
+  position: absolute;
+  top: 0.25rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.leyenda__marca--inicio {
+  transform: none;
+}
+
+.leyenda__marca--fin {
+  transform: translateX(-100%);
+}
+
+.leyenda__marca.leyenda__marca--inicio::before {
+  left: 0;
+}
+
+.leyenda__marca.leyenda__marca--fin::before {
+  left: 100%;
+}
+
+.leyenda__marca::before {
+  content: '';
+  position: absolute;
+  top: -0.35rem;
+  left: 50%;
+  width: 1px;
+  height: 0.3rem;
+  background: var(--color-texto-suave);
+}
+
+.leyenda__texto {
+  margin: var(--espacio-2) 0 0;
+}
+
+.leyenda__sin-dato {
+  display: flex;
+  gap: var(--espacio-2);
+  align-items: center;
+  margin: var(--espacio-2) 0 0;
+  color: var(--color-texto-suave);
+}
+
+.leyenda__muestra {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--color-borde-control);
+}
+
+/* ---- Ficha de un objeto ---- */
+.ficha {
+  margin-top: var(--espacio-4);
+  padding: var(--espacio-4);
+  border: 1px solid var(--color-borde-control);
+  border-radius: var(--radio);
+  background: var(--color-superficie-alta);
+}
+
+.ficha__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ficha__titulo {
+  margin: 0;
+  font-size: var(--texto-grande);
+}
+
+.ficha__origen {
+  margin: var(--espacio-2) 0;
+  color: var(--color-frio);
+}
+
+.ficha__datos {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--espacio-1) var(--espacio-4);
+  margin: 0;
+}
+
+.ficha__datos dt {
+  color: var(--color-texto-suave);
+}
+
+.ficha__datos dd {
+  margin: 0;
+}
+
+@media (max-width: 30rem) {
+  .ficha__datos,
+  .datos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ficha__datos dd,
+  .datos dd {
+    margin-bottom: var(--espacio-2);
+  }
+}
+
+/* ---- Comparar (RF-13) ---- */
+.comparador__controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-4) var(--espacio-8);
+  align-items: end;
+  margin-bottom: var(--espacio-6);
+}
+
+.comparador__controles .control {
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.comparador__controles .selector {
+  width: 100%;
+}
+
+.comparador__rotulos {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espacio-4);
+  width: min(100%, 75vh);
+  margin-bottom: var(--espacio-2);
+  color: var(--color-ambar);
+  font-family: var(--fuente-mono);
+}
+
+.comparador__paneles {
+  display: grid;
+  gap: var(--espacio-6);
+}
+
+@media (min-width: 48rem) {
+  .comparador__paneles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.comparador__panel {
+  margin: 0;
+}
+
+.comparador__panel .escenario {
+  width: 100%;
+  max-height: 75vh;
+}
+
+.comparador__rotulo {
+  margin-bottom: var(--espacio-2);
+  color: var(--color-ambar);
+  font-family: var(--fuente-mono);
+}
+
+.cortina__linea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--color-ambar);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 60%);
+}
+
+/* ---- Procedencia y objetos ---- */
+.procedencia,
+.conocidos,
+.avisos,
+.creditos {
+  display: grid;
+  gap: var(--espacio-4);
+}
+
+.procedencia > .seccion__titulo,
+.conocidos > .seccion__titulo,
+.avisos > .seccion__titulo,
+.creditos > .seccion__titulo {
+  margin-bottom: 0;
+}
+
+.datos__archivo a {
+  overflow-wrap: anywhere;
+}
+
+.conocidos__fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+  gap: var(--espacio-4);
+}
+
+.conocidos__fichas .ficha {
+  margin-top: 0;
+}
+
+.creditos p {
+  max-width: var(--ancho-lectura);
+  margin: 0;
+  color: var(--color-texto-suave);
+}

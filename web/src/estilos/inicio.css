@@ -1,18 +1,103 @@
 .inicio {
-  max-width: var(--ancho-lectura);
+  max-width: var(--ancho-pagina);
   margin: 0 auto;
-  padding: var(--espacio-12) var(--espacio-4);
+  padding: var(--espacio-12) var(--margen-lateral) 0;
+}
+
+.inicio__cabecera {
+  max-width: var(--ancho-lectura);
+  margin-bottom: var(--espacio-12);
 }
 
 .inicio__titulo {
   margin: 0 0 var(--espacio-4);
+  font-family: var(--fuente-mono);
   font-size: var(--texto-titulo);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 
 .inicio__bajada {
+  margin: 0 0 var(--espacio-6);
+  color: var(--color-ambar);
+  font-size: var(--texto-grande);
+}
+
+.inicio__explicacion {
+  margin: 0 0 var(--espacio-4);
+}
+
+.inicio__nota {
   margin: 0;
   color: var(--color-texto-suave);
+}
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  gap: var(--espacio-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tarjeta-de-campo__enlace {
+  display: flex;
+  gap: var(--espacio-6);
+  align-items: center;
+  height: 100%;
+  padding: var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  text-decoration: none;
+  transition: border-color 120ms ease;
+}
+
+.tarjeta-de-campo__enlace:hover {
+  border-color: var(--color-ambar);
+  color: var(--color-texto);
+}
+
+.tarjeta-de-campo__miniatura {
+  flex: none;
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: calc(var(--radio) / 2);
+  background: var(--color-fondo-visor);
+  /* Los píxeles de SPHEREx se ven como cuadrados, sin suavizar. */
+  image-rendering: pixelated;
+}
+
+.tarjeta-de-campo__texto {
+  display: grid;
+  gap: var(--espacio-2);
+}
+
+.tarjeta-de-campo__nombre {
   font-size: var(--texto-grande);
+  font-weight: 600;
+}
+
+.tarjeta-de-campo__dato {
+  color: var(--color-texto-suave);
+}
+
+.inicio__limites {
+  margin: var(--espacio-12) 0 0;
+  font-size: var(--texto-grande);
+}
+
+@media (max-width: 30rem) {
+  .tarjeta-de-campo__enlace {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tarjeta-de-campo__miniatura {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
 }
